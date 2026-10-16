@@ -1,0 +1,3521 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recuperação de Informação - Modelo Probabilístico</title>
+
+  <!-- Google Fonts: Inter, Outfit e Fira Code -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Folha de Estilos Externa -->
+  <link rel="stylesheet" href="teste_slides.css">
+
+  <style>
+/* ============================================================
+   DESIGN SYSTEM - SLIDES DO MODELO PROBABILÍSTICO (RI)
+   Apresentadores: Matheus & Rafael
+   ============================================================ */
+
+:root {
+  --bg-dark: #090d16;
+  --bg-canvas: #090d14;
+  --card-bg: rgba(23, 32, 54, 0.90);
+  --card-surface: #111622;
+  --card-border: rgba(56, 189, 248, 0.25);
+  --card-border-hover: rgba(56, 189, 248, 0.4);
+  --primary: #38bdf8;
+  --primary-glow: rgba(56, 189, 248, 0.35);
+  --accent-blue: #3b82f6;
+  --accent-cyan: #0284c7;
+  --accent-rafael: #38bdf8;
+  --accent-matheus: #a78bfa;
+  --accent-both: #34d399;
+  --accent-lab: #0ea5e9;
+  
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
+  
+  --formula-bg: #0b1120;
+  --formula-surface: #0a0e17;
+  --formula-border: rgba(255, 255, 255, 0.07);
+  --table-border: #334155;
+  --table-header-bg: #0c1322;
+  
+  --success: #4ade80;
+  --danger: #f87171;
+  --warning: #fbbf24;
+  --state-success: #10b981;
+  --state-danger: #f43f5e;
+  --state-warning: #f59e0b;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-dark);
+  background-image:
+    radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.12) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(167, 139, 250, 0.12) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(15, 23, 42, 0.9) 0%, rgba(9, 13, 22, 1) 100%);
+  color: var(--text-main);
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Barra Superior de Progresso */
+.progress-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  z-index: 100;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 4.5%;
+  background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc);
+  box-shadow: 0 0 12px var(--primary-glow);
+  transition: width 0.3s ease;
+}
+
+/* Toolbar de Controle */
+.top-toolbar {
+  position: fixed;
+  top: 14px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 90;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(12px);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.btn-simulator-shortcut {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-simulator-shortcut:hover {
+  background: rgba(56, 189, 248, 0.25);
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+}
+
+.timer-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  transition: all 0.2s;
+}
+
+.timer-badge:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.tool-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.tool-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Container de Slides */
+.slide-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.slide {
+  display: none;
+  width: 90vw;
+  max-width: 1220px;
+  height: 84vh;
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  border-radius: 20px;
+  padding: 38px 56px;
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.07);
+  flex-direction: column;
+  justify-content: space-between;
+  border-left: 8px solid var(--primary);
+  opacity: 0;
+  transform: scale(0.98);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.slide.active {
+  display: flex;
+  opacity: 1;
+  transform: scale(1);
+}
+
+.slide[data-presenter="rafael"] { border-left-color: var(--accent-rafael); }
+.slide[data-presenter="matheus"] { border-left-color: var(--accent-matheus); }
+.slide[data-presenter="both"] { border-left-color: var(--accent-both); }
+.slide[data-presenter="lab"] { border-left-color: var(--accent-lab); }
+
+h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 2.15rem;
+  font-weight: 700;
+  color: #38bdf8;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+  line-height: 1.22;
+}
+
+.slide[data-presenter="matheus"] h1 { color: #c084fc; }
+.slide[data-presenter="both"] h1 {
+  background: linear-gradient(90deg, #38bdf8, #818cf8, #34d399);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.slide[data-presenter="lab"] h1 { color: #38bdf8; }
+
+h2 {
+  font-size: 1.15rem;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.content {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: #e2e8f0;
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.content::-webkit-scrollbar { width: 6px; }
+.content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+
+ul, ol { margin-left: 28px; margin-top: 8px; }
+li { margin-bottom: 10px; }
+li strong { color: #ffffff; }
+
+.highlight {
+  color: var(--primary);
+  font-weight: 600;
+  background: rgba(56, 189, 248, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.formula {
+  background: var(--formula-bg);
+  padding: 14px 22px;
+  border-radius: 12px;
+  margin: 12px 0;
+  border: 1px solid #1e293b;
+  text-align: center;
+  font-size: 1.22rem;
+  color: #f1f5f9;
+}
+
+.formula.boxed {
+  border: 1.5px solid rgba(56, 189, 248, 0.5);
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.9), rgba(11, 17, 32, 0.95));
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+}
+
+code {
+  font-family: 'Fira Code', monospace;
+  background: rgba(15, 23, 42, 0.8);
+  padding: 2px 7px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #38bdf8;
+  font-size: 0.95rem;
+}
+
+/* Tabelas Elegantes e Responsivas */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 12px 0;
+  font-size: 0.98rem;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--table-border);
+}
+
+th, td {
+  border: 1px solid rgba(51, 65, 85, 0.6);
+  padding: 8px 12px;
+  text-align: center;
+}
+
+th {
+  background-color: #0c1322;
+  color: #38bdf8;
+  font-weight: 600;
+}
+
+td {
+  background-color: rgba(15, 23, 42, 0.4);
+}
+
+.cell-one {
+  color: #38bdf8;
+  font-weight: 700;
+  background: rgba(56, 189, 248, 0.08);
+}
+
+.cell-zero {
+  color: #64748b;
+}
+
+.cell-sim {
+  color: #4ade80;
+  font-weight: 700;
+  font-family: 'Fira Code', monospace;
+}
+
+.split-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.split-layout-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.split-layout-right {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(51, 65, 85, 0.6);
+  padding-top: 14px;
+  font-size: 0.95rem;
+  color: var(--text-subtle);
+}
+
+.presenter-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+
+.presenter-badge.rafael {
+  color: var(--accent-rafael);
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.presenter-badge.matheus {
+  color: var(--accent-matheus);
+  background: rgba(167, 139, 250, 0.1);
+  border: 1px solid rgba(167, 139, 250, 0.3);
+}
+
+.presenter-badge.both {
+  color: var(--accent-both);
+  background: rgba(52, 211, 153, 0.1);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+}
+
+.presenter-badge.lab {
+  color: var(--accent-lab);
+  background: rgba(14, 165, 233, 0.1);
+  border: 1px solid rgba(14, 165, 233, 0.3);
+}
+
+.slide-indicator {
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.slide-indicator:hover {
+  color: #f8fafc;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Barra Flutuante de Navegação */
+.nav-bar {
+  position: fixed;
+  bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(14px);
+  padding: 8px 18px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  z-index: 80;
+}
+
+.nav-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nav-btn:hover:not(:disabled) {
+  background: var(--primary);
+  color: #0b1120;
+  box-shadow: 0 0 12px var(--primary-glow);
+}
+
+.nav-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.nav-hint {
+  font-size: 0.78rem;
+  color: #64748b;
+  margin-left: 6px;
+}
+
+/* Modal Visão Geral de Todos os Slides */
+.overview-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(7, 10, 16, 0.95);
+  backdrop-filter: blur(16px);
+  z-index: 200;
+  display: none;
+  flex-direction: column;
+  padding: 30px 40px;
+}
+
+.overview-modal.open { display: flex; }
+
+.overview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 12px;
+}
+
+.overview-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 14px;
+  overflow-y: auto;
+  padding-right: 8px;
+  flex-grow: 1;
+}
+
+.overview-card {
+  background: #111622;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 130px;
+}
+
+.overview-card:hover {
+  border-color: #38bdf8;
+  background: #141c2c;
+  transform: translateY(-2px);
+}
+
+.overview-card.current {
+  border: 1.5px solid #38bdf8;
+  background: rgba(56, 189, 248, 0.08);
+}
+
+.overview-card-num {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.72rem;
+  color: #38bdf8;
+}
+
+.overview-card-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  color: #e2e8f0;
+  font-weight: 600;
+  margin: 4px 0;
+  line-height: 1.35;
+}
+
+.overview-card-speaker {
+  font-size: 0.75rem;
+  color: #8b9bb4;
+}
+
+
+.sim-container {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 16px;
+      height: 100%;
+      overflow: hidden;
+      text-align: left;
+    }
+
+    .sim-panel {
+      background: #0d121c;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      gap: 14px;
+    }
+
+    .sim-panel::-webkit-scrollbar, .sim-results::-webkit-scrollbar {
+      width: 4px;
+    }
+    .sim-panel::-webkit-scrollbar-thumb, .sim-results::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+    }
+
+    .sim-label {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #8b9bb4;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sim-presets {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .preset-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #94a3b8;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: all 0.15s;
+    }
+    .preset-btn:hover {
+      background: rgba(56, 189, 248, 0.1);
+      border-color: rgba(56, 189, 248, 0.3);
+      color: #38bdf8;
+    }
+
+    .sim-input, .sim-select, .sim-textarea {
+      width: 100%;
+      background: #070a10;
+      border: 1px solid #1f2738;
+      color: #f1f5f9;
+      padding: 7px 11px;
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.2s;
+      user-select: text;
+    }
+    .sim-input:focus, .sim-select:focus, .sim-textarea:focus {
+      border-color: #38bdf8;
+    }
+
+    .doc-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 7px;
+    }
+
+    .doc-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.08);
+      padding: 3px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .doc-remove-btn {
+      background: transparent;
+      border: none;
+      color: #64748b;
+      cursor: pointer;
+      font-size: 0.85rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: color 0.15s;
+    }
+    .doc-remove-btn:hover { color: #f43f5e; }
+
+    .btn-add-doc {
+      background: transparent;
+      border: 1px dashed rgba(255, 255, 255, 0.14);
+      color: #8b9bb4;
+      padding: 6px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+      transition: all 0.15s;
+    }
+    .btn-add-doc:hover {
+      border-color: #38bdf8;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.04);
+    }
+
+    .btn-calculate {
+      background: #0284c7;
+      border: none;
+      color: #ffffff;
+      font-weight: 600;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.88rem;
+      padding: 9px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.15s;
+      margin-top: 4px;
+    }
+    .btn-calculate:hover {
+      background: #0369a1;
+    }
+
+    .sim-results {
+      background: #0d121c;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .step-card {
+      background: #080c14;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 6px;
+    }
+
+    .step-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .rank-table {
+      margin: 6px 0;
+      font-size: 0.9rem;
+    }
+    .rank-table th { padding: 7px 10px; font-size: 0.8rem; }
+    .rank-table td { padding: 7px 10px; text-align: left; }
+    .rank-pos {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      text-align: center;
+      width: 40px;
+      color: #94a3b8;
+    }
+    .rank-pos-1 { color: #38bdf8; }
+    .rank-score {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      text-align: center;
+      width: 85px;
+    }
+
+    .relevance-toggle-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      color: #8b9bb4;
+      user-select: none;
+    }
+    .relevance-toggle-label input {
+      accent-color: #38bdf8;
+      cursor: pointer;
+    }
+
+    .formula-explanation {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      line-height: 1.5;
+      margin-top: 8px;
+      background: rgba(255, 255, 255, 0.02);
+      padding: 8px 12px;
+      border-radius: 5px;
+      border-left: 2px solid #38bdf8;
+    }
+
+    /* ============================================================
+       CARD DE INDICAÇÃO DO MODELO (Para que serve cada fórmula)
+       ============================================================ */
+    .model-rec-card {
+      background: rgba(14, 165, 233, 0.05);
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      border-radius: 8px;
+      padding: 11px 13px;
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      transition: all 0.25s ease;
+      font-size: 0.81rem;
+    }
+    .model-rec-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .model-rec-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .model-rec-tag.cold-start {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+    .model-rec-tag.historic {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.35);
+    }
+    .model-rec-tag.feedback {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+    }
+    .model-rec-tag.automatic {
+      background: rgba(168, 85, 247, 0.15);
+      color: #c084fc;
+      border: 1px solid rgba(168, 85, 247, 0.35);
+    }
+    .model-rec-formula {
+      font-family: 'JetBrains Mono', monospace;
+      color: #94a3b8;
+      font-size: 0.72rem;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .model-rec-desc {
+      color: #e2e8f0;
+      line-height: 1.48;
+      font-size: 0.82rem;
+    }
+    .model-rec-details {
+      color: #94a3b8;
+      line-height: 1.45;
+      font-size: 0.76rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      padding-top: 6px;
+    }
+
+    /* ============================================================
+       MODAL E CONTROLES DO GERADOR SINTÉTICO DE DOCUMENTOS
+       ============================================================ */
+    .btn-generator-highlight {
+      background: rgba(14, 165, 233, 0.12) !important;
+      border-color: rgba(56, 189, 248, 0.4) !important;
+      color: #38bdf8 !important;
+      font-weight: 600;
+    }
+    .btn-generator-highlight:hover {
+      background: rgba(14, 165, 233, 0.25) !important;
+      border-color: #38bdf8 !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+    }
+
+    .generator-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(7, 10, 16, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      z-index: 250;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .generator-modal.open {
+      display: flex;
+    }
+    .generator-modal-content {
+      background: #111622;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      width: 92%;
+      max-width: 580px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 26px 30px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-align: left;
+    }
+    .generator-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 12px;
+    }
+    .generator-modal-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .generator-modal-subtitle {
+      font-size: 0.82rem;
+      color: #8b9bb4;
+      margin-top: 4px;
+      line-height: 1.45;
+    }
+
+    .gen-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .gen-row-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.84rem;
+      color: #cbd5e1;
+      font-weight: 500;
+    }
+    .gen-badge-val {
+      font-family: 'JetBrains Mono', monospace;
+      color: #38bdf8;
+      font-weight: 600;
+      font-size: 0.82rem;
+      background: rgba(56, 189, 248, 0.1);
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+    .gen-slider {
+      width: 100%;
+      accent-color: #0284c7;
+      cursor: pointer;
+      height: 6px;
+      background: #1f2738;
+      border-radius: 3px;
+    }
+    .gen-preview-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      color: #cbd5e1;
+    }
+    .gen-quick-sizes {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .gen-size-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #94a3b8;
+      padding: 4px 10px;
+      border-radius: 5px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      transition: all 0.15s;
+    }
+    .gen-size-btn:hover, .gen-size-btn.active {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border-color: #38bdf8;
+    }
+
+    /* ============================================================
+       COMPOSIÇÃO DA SIMILARIDADE (Design Limpo, Estruturado e Legível)
+       ============================================================ */
+    .sim-comp-box {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .sim-principle-card {
+      background: rgba(56, 189, 248, 0.04);
+      border: 1px solid rgba(56, 189, 248, 0.16);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      line-height: 1.55;
+      color: #cbd5e1;
+    }
+    .sim-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .sim-stat-pill {
+      background: #080c14;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 7px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .sim-stat-pill-label {
+      font-size: 0.7rem;
+      color: #718096;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .sim-stat-pill-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+
+    .sim-filter-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 2px;
+    }
+    .sim-filter-tabs {
+      display: flex;
+      gap: 6px;
+    }
+    .sim-filter-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #94a3b8;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: all 0.15s;
+    }
+    .sim-filter-btn:hover, .sim-filter-btn.active {
+      background: rgba(56, 189, 248, 0.14);
+      border-color: #38bdf8;
+      color: #38bdf8;
+    }
+
+    .sim-doc-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 420px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .sim-doc-grid::-webkit-scrollbar {
+      width: 4px;
+    }
+    .sim-doc-grid::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 3px;
+    }
+
+    .sim-doc-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .sim-doc-card:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+    .sim-doc-card.has-match {
+      border-left: 3px solid #38bdf8;
+    }
+    .sim-doc-card.multi-match {
+      border-left: 3px solid #10b981;
+    }
+    .sim-doc-card.zero-match {
+      border-left: 3px solid #334155;
+      opacity: 0.85;
+    }
+
+    .sim-doc-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .sim-doc-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sim-doc-pos {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: #64748b;
+      font-weight: 600;
+    }
+    .sim-doc-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: #38bdf8;
+      font-size: 0.88rem;
+    }
+    .sim-doc-score {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.98rem;
+      font-weight: 700;
+    }
+
+    .sim-math-equation {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      background: rgba(0, 0, 0, 0.28);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .term-pill {
+      background: rgba(56, 189, 248, 0.12);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .math-symbol {
+      color: #64748b;
+      font-weight: 600;
+    }
+    .math-val {
+      color: #f1f5f9;
+      font-weight: 600;
+    }
+    .math-total {
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .contrib-bar {
+      height: 4px;
+      border-radius: 2px;
+      overflow: hidden;
+      display: flex;
+      background: rgba(255, 255, 255, 0.05);
+      margin-top: 3px;
+    }
+    .contrib-seg {
+      height: 100%;
+      transition: width 0.3s;
+    }
+
+    .sim-doc-explanation {
+      font-size: 0.78rem;
+      color: #8b9bb4;
+      line-height: 1.45;
+    }
+
+    /* Modal Visão Geral de Todos os Slides */
+    .overview-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(7, 10, 16, 0.95);
+      backdrop-filter: blur(12px);
+      z-index: 200;
+      display: none;
+      flex-direction: column;
+      padding: 30px 40px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .overview-modal.open { display: flex; opacity: 1; }
+    .overview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 12px;
+    }
+    .overview-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: #f1f5f9;
+    }
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 14px;
+      overflow-y: auto;
+      padding-right: 8px;
+      flex-grow: 1;
+    }
+    .overview-card {
+      background: #111622;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 8px;
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 130px;
+    }
+    .overview-card:hover {
+      border-color: #38bdf8;
+      background: #141c2c;
+    }
+    .overview-card.current {
+      border: 1px solid #38bdf8;
+      background: rgba(56, 189, 248, 0.06);
+    }
+    .overview-card-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: #64748b;
+    }
+    .overview-card-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.92rem;
+      color: #e2e8f0;
+      font-weight: 600;
+      margin: 4px 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.35;
+    }
+    .overview-card-speaker {
+      font-size: 0.74rem;
+      color: #8b9bb4;
+    }
+
+
+/* ============================================================
+   ESTILOS DE IMPRESSÃO
+   ============================================================ */
+@media print {
+  body {
+    overflow: visible !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .progress-container,
+  .top-toolbar,
+  .nav-bar,
+  .overview-modal,
+  .generator-modal {
+    display: none !important;
+  }
+
+  .slide-container {
+    display: block !important;
+    padding: 0 !important;
+    height: auto !important;
+    width: 100% !important;
+  }
+
+  .slide {
+    display: flex !important;
+    page-break-after: always !important;
+    page-break-inside: avoid !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: 100% !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: #fff !important;
+    color: #000 !important;
+    border: none !important;
+    border-left: 6px solid #0284c7 !important;
+    opacity: 1 !important;
+    transform: none !important;
+    padding: 40px !important;
+  }
+
+  h1 { color: #0284c7 !important; }
+  h2, .footer { color: #475569 !important; }
+  .content { color: #1e293b !important; }
+
+  .formula {
+    background: #f8fafc !important;
+    color: #000 !important;
+    border-color: #cbd5e1 !important;
+    box-shadow: none !important;
+  }
+
+  .presenter-badge {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+  }
+
+  th { background: #f1f5f9 !important; color: #000 !important; }
+  td { border-color: #cbd5e1 !important; background: #fff !important; }
+}
+
+  </style>
+
+  <!-- Configuração e Carregamento do MathJax 3 -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]'], ['$$', '$$']]
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+<!-- Barra Superior de Progresso -->
+<div class="progress-container">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<!-- Barra Superior de Controle e Utilidades -->
+<div class="top-toolbar">
+  <button class="btn-simulator-shortcut" id="btnGoToLab" title="Pular para o Laboratório Interativo (Slide 22)">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.31M14 2v7.31M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0"/></svg>
+    <span>Simulador</span>
+  </button>
+  
+  <div class="timer-badge" id="timerBadge" title="Clique para Iniciar/Pausar o Cronômetro">
+    ⏱️ <span id="timerText">40:00</span>
+  </div>
+
+  <button class="tool-btn" id="btnOverview" title="Índice de Slides (Tecla O ou Esc)">⊞</button>
+  <button class="tool-btn" id="btnFullscreen" title="Tela Cheia (Tecla F)">⛶</button>
+  <button class="tool-btn" id="btnPrint" title="Imprimir / Salvar PDF">🖨️</button>
+</div>
+
+<!-- Container Principal dos 22 Slides -->
+<div class="slide-container" id="slideDeck">
+
+  <!-- SLIDE 1 (Página 1 do PDF) -->
+  <div class="slide active" data-presenter="both">
+    <div style="display: flex; flex-direction: column; justify-content: center; height: 100%; align-items: center; text-align: center;">
+      <h1 style="font-size: 3rem; margin-bottom: 12px;">Recuperação de Informação</h1>
+      <h2 style="font-size: 2rem; color: #38bdf8; font-weight: 600; margin-bottom: 36px; font-family: 'Outfit', sans-serif;">Modelo Probabilístico</h2>
+      
+      <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 14px; padding: 22px 48px; box-shadow: 0 10px 30px rgba(0,0,0,0.4);">
+        <p style="font-size: 1.15rem; color: #94a3b8; margin-bottom: 10px;">Trabalho feito por:</p>
+        <p style="font-size: 1.4rem; font-weight: 700; color: #f1f5f9; font-family: 'Outfit', sans-serif;">Matheus</p>
+        <p style="font-size: 1.4rem; font-weight: 700; color: #38bdf8; font-family: 'Outfit', sans-serif;">Rafael</p>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="presenter-badge both">Matheus & Rafael</span>
+      <span class="slide-indicator" onclick="toggleOverview()">Slide 1 / 22</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 2 (Página 2 do PDF) -->
+  <div class="slide" data-presenter="rafael">
+    <div>
+      <h1>O Modelo Probabilístico</h1>
+      <div class="content" style="margin-top: 24px;">
+        <ul style="font-size: 1.25rem; line-height: 1.8;">
+          <li>O modelo probabilístico, proposto em <strong>1976 por Robertson e Sparck Jones</strong>, propõe uma solução ao problema de RI com base em um arcabouço probabilístico. A idéia fundamental é a seguinte:
+            <ul style="margin-top: 14px; font-size: 1.15rem;">
+              <li style="margin-bottom: 14px;">A partir de uma consulta do usuário, existe um conjunto de documentos que contém <strong>exatamente os documentos relevantes e nenhum outro</strong>.</li>
+              <li>A partir de interações com o usuário, o modelo redefine o ranqueamento de documentos relevantes de acordo com as definições do usuário, que seleciona os documentos mais relevantes retornados a cada iteração.</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="presenter-badge rafael">Apresentador: Rafael</span>
+      <span class="slide-indicator" onclick="toggleOverview()">Slide 2 / 22</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 3 (Página 3 do PDF) -->
+  <div class="slide" data-presenter="rafael">
+    <div>
+      <h1>Modelo Probabilístico</h1>
+      <div class="content" style="margin-top: 24px;">
+        <ul style="font-size: 1.25rem; line-height: 1.8;">
+          <li>Trata o problema de RI usando um <strong>arcabouço probabilístico</strong></li>
+          <li style="margin-top: 14px;">A ideia fundamental:
+            <ul style="margin-top: 10px; font-size: 1.15rem;">
+              <li style="margin-bottom: 12px;">Dada uma consulta, existe um conjunto de documentos que contém exatamente os documentos relevantes para o usuário</li>
+              <li>Esse conjunto é o <span class="highlight">conjunto resposta ideal</span></li>
+            </ul>
+          </li>
+          <li style="margin-top: 18px;">O modelo estima a probabilidade de cada documento pertencer ao conjunto ideal por meio do <strong>cálculo de similaridade com a consulta</strong>.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="presenter-badge rafael">Apresentador: Rafael</span>
+      <span class="slide-indicator" onclick="toggleOverview()">Slide 3 / 22</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 4 (Página 4 do PDF) -->
+  <div class="slide" data-presenter="rafael">
+    <div>
+      <h1>Termos de indexação</h1>
+      <div class="content" style="margin-top: 18px;">
+        <ul style="font-size: 1.18rem; line-height: 1.75;">
+          <li><strong>Quais termos de indexação distinguem os documentos relevantes dos demais documentos do conjunto corpus?</strong>
+            <ul style="margin-top: 12px; font-size: 1.1rem;">
+              <li style="margin-bottom: 14px;">As características dos documentos no conjunto ideal <strong>não são conhecidas</strong> no momento da primeira interação.</li>
+              <li style="margin-bottom: 14px;">O usuário encontra as características dos documentos no conjunto ideal por meio da formulação de uma consulta, gerando uma <strong>primeira descrição probabilística</strong> desse conjunto.</li>
+              <li>É possível <strong>gradativamente melhorar os resultados</strong> (o conjunto de documentos recuperados) por meio de interações onde o usuário marca os documentos recuperados relevantes, o que reflete no incremento das probabilidades dos termos de indexação presentes na consulta e nos documentos marcados.</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="presenter-badge rafael">Apresentador: Rafael</span>
+      <span class="slide-indicator" onclick="toggleOverview()">Slide 4 / 22</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 5 (Página 5 do PDF) -->
+  <div class="slide" data-presenter="rafael">
+    <div>
+      <h1>Representação de um Documento</h1>
+      <div class="content" style="margin-top: 20px;">
+        <ul style="font-size: 1.22rem; line-height: 1.8;">
+          <li>Dado o conjunto de \(n\) termos:
+            <div class="formula boxed" style="max-width: 420px; margin: 12px 0;">$$V = \{t_1, t_2, \dots , t_n\}$$</div>
+          </li>
+          <li style="margin-top: 14px;">Os documentos são representados como um conjunto de termos de indexação.
+            <ul style="margin-top: 10px; font-size: 1.12rem;">
+              <li>Cada documento é representado no computador como <strong>vetores de pesos binários</strong> de tamanho \(n\)
+                <ul style="margin-top: 8px;">
+                  <li style="margin-bottom: 8px;">Cada posição no vetor corresponde a um termo usado na indexação do documento</li>
+                  <li>Cada valor indica se o termo está ou não presente no documento.</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="presenter-badge rafael">Apresentador: Rafael</span>
+      <span class="slide-indicator" onclick="toggleOverview()">Slide 5 / 22</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 6 (Página 6 do PDF) -->
+  <div class="slide" data-presenter="rafael">
+    <div>
+      <h1>Representação de um documento</h1>
+      <div class="content" style="margin-top: 14px;">
+        <div class="split-layout">
+          <div class="split-layout-left">
+            <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 18px; margin-bottom: 16px;">
+              <p style="font-size: 1.15rem; color: #38bdf8; font-weight: 700; margin-bottom: 10px; font-family: 'Outfit', sans-serif;">Legenda:</p>
+              <p style="font-size: 1.05rem; margin-bottom: 6px;"><strong style="color: #f87171;">T1:</strong> Brasil</p>
+              <p style="font-size: 1.05rem; margin-bottom: 6px;"><strong style="color: #f87171;">T2:</strong> Olimpíada</p>
+              <p style="font-size: 1.05rem;"><strong style="color: #f87171;">T3:</strong> Londres</p>
+            </div>
+            <p style="font-size: 0.95rem; color: #94a3b8;">Cada linha da tabela é a representação vetorial binária de um documento específico da coleção.</p>
+          </div>
+
+          <div class="split-layout-right">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 25%;">Doc</th>
+                  <th style="color: #f87171; font-weight: 700;">t1</th>
+                  <th style="color: #f87171; font-weight: 700;">t2</th>
+                  <th style="color: #f87171; font-weight: 700;">t3</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong style="color: #f87171;">d1</strong></td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-one">1</td></tr>
+                <tr><td><strong style="color: #f87171;">d2</strong></td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-zero">0</td></tr>
+                <tr><td><strong style="color: #f87171;">d3</strong></td><td class="cell-zero">0</td><td class="cell-one">1</td><td class="cell-one">1</td></tr>
+                <tr><td><strong style="color: #f87171;">d4</strong></td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-zero">0</td></tr>
+                <tr><td><strong style="color: #f87171;">d5</strong></td><td class="cell-one">1</td><td class="cell-one">1</td><td class="cell-one">1</td></tr>
+                <tr><td><strong style="color: #f87171;">d6</strong></td><td class="cell-one">1</td><td class="cell-one">1</td><td class="cell-zero">0</td></tr>
+                <tr><td><strong style="color: #f87171;">d7</strong></td><td class="cell-zero">0</td><td class="cell-one">1</td><td class="cell-zero">0</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="presenter-badge rafael">Apresentador: Rafael</span>
+      <span class="slide-indicator" onclick="toggleOverview()">Slide 6 / 22</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 7 (Página 7 do PDF) -->
+  <div class="slide" data-presenter="rafael">
+    <div>
+      <h1>Representação da Consulta</h1>
+      <div class="content" style="margin-top: 16px;">
+        <ul style="font-size: 1.18rem; line-height: 1.75;">
+          <li>A expressão de busca informada pelo usuário consiste em um <strong>conjunto de termos separados por espaço em branco</strong></li>
+          <li>A consulta é representada como um conjunto de termos de indexação
+            <ul style="margin-top: 8px;">
+              <li>Cada consulta (conjunto de termos) é representada pelo sistema como um <strong>vetor binário de termos de indexação</strong>.</li>
+            </ul>
+          </li>
+          <li style="margin-top: 14px;"><strong>Exemplo:</strong><br>
+            Dada a consulta <span class="highlight">q = Brasil Londres</span>
+          </li>
+        </ul>
+
+        <div style="display: flex; gap: 32px; align-items: center; margin-top: 18px;">
+          <div style="flex: 1; max-width: 360px;">
+            <table>
+              <thead>
+                <tr>
+                  <th style="color: #f87171; font-weight: 700;">q</th>
+                  <th style="color: #f87171; font-weight: 700;">t1</th>
+                  <th style="color: #f87171; font-weight: 700;">t2</th>
+                  <th style="color: #f87171; font-weight: 700;">t3</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong style="color: #f87171;">q</strong></td>
+                  <td class="cell-one">1</td>
+                  <td class="cell-zero">0</td>
+                  <td class="cell-one">1</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 14px 20px; font-size: 1rem;">
+            <p style="color: #38bdf8; font-weight: 700; margin-bottom: 6px;">Legenda:</p>
+            <p>t1 = Brasil</p>
+            <p>t2 = Olimpíada</p>
+            <p>t3 = Londres</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="presenter-badge rafael">Apresentador: Rafael</span>
+      <span class="slide-indicator" onclick="toggleOverview()">Slide 7 / 22</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 8 (Página 8 do PDF) -->
+  <div class="slide" data-presenter="rafael">
+    <div>
+      <h1>Representação dos documentos e da consulta</h1>
+      <div class="content" style="margin-top: 12px;">
+        <div class="split-layout">
+          <div class="split-layout-left">
+            <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 20px;">
+              <p style="font-size: 1.15rem; color: #38bdf8; font-weight: 700; margin-bottom: 12px; font-family: 'Outfit', sans-serif;">Legenda:</p>
+              <ul style="margin-left: 20px; font-size: 1.1rem; line-height: 1.8;">
+                <li><strong>t1 = Brasil</strong></li>
+                <li><strong>t2 = Olimpíada</strong></li>
+                <li><strong>t3 = Londres</strong></li>
+              </ul>
+              <div style="margin-top: 18px; font-size: 0.95rem; color: #94a3b8; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px;">
+                Comparação direta: o vetor da consulta \(q\) é posicionado sob o mesmo espaço dimensional dos documentos \(d_1 \dots d_7\).
+              </div>
+            </div>
+          </div>
+
+          <div class="split-layout-right">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 25%;">Doc</th>
+                  <th style="color: #f87171; font-weight: 700;">t1</th>
+                  <th style="color: #f87171; font-weight: 700;">t2</th>
+                  <th style="color: #f87171; font-weight: 700;">t3</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong style="color: #f87171;">d1</strong></td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-one">1</td></tr>
+                <tr><td><strong style="color: #f87171;">d2</strong></td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-zero">0</td></tr>
+                <tr><td><strong style="color: #f87171;">d3</strong></td><td class="cell-zero">0</td><td class="cell-one">1</td><td class="cell-one">1</td></tr>
+                <tr><td><strong style="color: #f87171;">d4</strong></td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-zero">0</td></tr>
+                <tr><td><strong style="color: #f87171;">d5</strong></td><td class="cell-one">1</td><td class="cell-one">1</td><td class="cell-one">1</td></tr>
+                <tr><td><strong style="color: #f87171;">d6</strong></td><td class="cell-one">1</td><td class="cell-one">1</td><td class="cell-zero">0</td></tr>
+                <tr><td><strong style="color: #f87171;">d7</strong></td><td class="cell-zero">0</td><td class="cell-one">1</td><td class="cell-zero">0</td></tr>
+                <tr style="border-top: 2px solid #38bdf8; background: rgba(56, 189, 248, 0.1);">
+                  <td><strong style="color: #38bdf8;">q</strong></td>
+                  <td class="cell-one" style="color: #38bdf8;">1</td>
+                  <td class="cell-zero">0</td>
+                  <td class="cell-one" style="color: #38bdf8;">1</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="presenter-badge rafael">Apresentador: Rafael</span>
+      <span class="slide-indicator" onclick="toggleOverview()">Slide 8 / 22</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 9 (Página 9 do PDF) -->
+  <div class="slide" data-presenter="rafael">
+    <div>
+      <h1>Função de Busca</h1>
+      <div class="content" style="margin-top: 14px;">
+        <ul style="font-size: 1.18rem; line-height: 1.75;">
+          <li>A similaridade entre consulta e documento pode ser mensurada pela razão entre as probabilidades:</li>
+        </ul>
+
+        <div class="formula boxed" style="font-size: 1.4rem; padding: 18px 24px;">
+          $$\text{Similaridade}(d_j, q) = \frac{P(d_j \mid \text{Rel})}{P(d_j \mid \neg\text{Rel})}$$
+        </div>
+
+        <ul style="font-size: 1.15rem; line-height: 1.75;">
+          <li>A similaridade entre o documento \(d_j\) e a consulta \(q\) é a razão entre a probabilidade de observar esse documento entre os documentos relevantes para a consulta e a probabilidade de observá-lo entre os não relevantes.</li>
+        </ul>
+
+        <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 14px 22px; margin-top: 14px; font-size: 1.05rem;">
+          <p style="color: #38bdf8; font-weight: 700; margin-bottom: 6px;">Legenda:</p>
+          <ul style="margin-left: 18px;">
+            <li>\(d_j\): documento analisado.</li>
+            <li>\(q\): consulta realizada.</li>
+            <li>\(\text{Rel}\): relevante para a consulta.</li>
+            <li>\(\neg\text{Rel}\): não relevante para a consulta.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="presenter-badge rafael">Apresentador: Rafael</span>
+      <span class="slide-indicator" onclick="toggleOverview()">Slide 9 / 22</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 10 (Página 10 do PDF) -->
+  <div class="slide" data-presenter="rafael">
+    <div>
+      <h1>Função de Busca</h1>
+      <div class="content" style="margin-top: 12px;">
+        <ul style="font-size: 1.18rem; line-height: 1.75;">
+          <li><strong>Como calcular a probabilidade dos documentos em função dos termos da consulta?</strong></li>
+          <li>Atribuindo peso a cada termo de indexação em função das probabilidades estimadas para cada termo ocorrer nos conjuntos \(\text{Rel}\) e \(\neg\text{Rel}\) marcados manualmente pelo usuário.</li>
+          <li style="margin-top: 10px;">\(P(t_i \mid \text{Rel})\): probabilidade de o termo \(t_i\) estar presente em um documento relevante para a consulta. Quanto maior esse valor, mais a presença do termo favorece a relevância do documento.</li>
+          <li>\(P(t_i \mid \neg\text{Rel})\): probabilidade de o termo \(t_i\) estar presente em um documento não relevante para a consulta.</li>
+        </ul>
+
+        <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 14px 22px; margin-top: 14px; font-size: 1.05rem;">
+          <p style="color: #38bdf8; font-weight: 700; margin-bottom: 6px;">Legenda:</p>
+          <ul style="margin-left: 18px;">
+            <li>\(t_i\): termo analisado.</li>
+            <li>\(\text{Rel}\): documento relevante para a consulta.</li>
+            <li>\(\neg\text{Rel}\): documento não relevante para a consulta.</li>
+            <li>\(\mid\): significa “dado que”, indicando uma condição.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="presenter-badge rafael">Apresentador: Rafael</span>
+      <span class="slide-indicator" onclick="toggleOverview()">Slide 10 / 22</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 11 (Página 11 do PDF) -->
+  <div class="slide" data-presenter="matheus">
+    <div>
+      <h1>Exemplo de Função de Busca</h1>
+      <div class="content" style="margin-top: 10px;">
+        <p style="font-size: 1.15rem; margin-bottom: 8px;"><strong>Exemplo:</strong> Consulta \(q\): Recuperação da Informação</p>
+        <p style="font-size: 1.05rem; color: #38bdf8; margin-bottom: 12px;">▪ A partir da marcação do usuário:</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 50%; color: #34d399; font-size: 1.05rem;">Relevantes (Rel) &mdash; Total: 10 documentos</th>
+              <th style="width: 50%; color: #f87171; font-size: 1.05rem;">Não relevantes (&not;Rel) &mdash; Total: 10 documentos</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="text-align: left; padding-left: 20px;">\(t_1\) &mdash; Recuperação: <strong>10 documentos</strong></td>
+              <td style="text-align: left; padding-left: 20px;">\(t_1\) &mdash; Recuperação: <strong>5 documentos</strong></td>
+            </tr>
+            <tr>
+              <td style="text-align: left; padding-left: 20px;">\(t_2\) &mdash; Informação: <strong>8 documentos</strong></td>
+              <td style="text-align: left; padding-left: 20px;">\(t_2\) &mdash; Informação: <strong>6 documentos</strong></td>
+            </tr>
+            <tr style="background: rgba(15, 23, 42, 0.7); font-family: 'Fira Code', monospace;">
+              <td>\(P(t_1 \mid \text{Rel}) = 10/10 = \mathbf{1,0}\)</td>
+              <td>\(P(t_1 \mid \neg\text{Rel}) = 5/10 = \mathbf{0,5}\)</td>
+            </tr>
+            <tr style="background: rgba(15, 23, 42, 0.7); font-family: 'Fira Code', monospace;">
+              <td>\(P(t_2 \mid \text{Rel}) = 8/10 = \mathbf{0,8}\)</td>
+              <td>\(P(t_2 \mid \neg\text{Rel}) = 6/10 = \mathbf{0,6}\)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <ul style="font-size: 1.05rem; margin-top: 12px; line-height: 1.7;">
+          <li>Documentos que contêm ambos os termos são provavelmente os mais relevantes</li>
+          <li>Documentos que contêm apenas o termo “Recuperação” são provavelmente mais relevantes que os que contêm apenas o termo “Informação”.</li>
+          <li>Se \(d_j\) contém termos que ocorrem com muita frequência em Rel e pouca frequência em &not;Rel, então \(d_j\) é provavelmente relevante.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="presenter-badge matheus">Apresentador: Matheus</span>
+      <span class="slide-indicator" onclick="toggleOverview()">Slide 11 / 22</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 12 (Página 12 do PDF) -->
+  <div class="slide" data-presenter="matheus">
+    <div>
+      <h1>Função de Busca</h1>
+      <div class="content" style="margin-top: 10px;">
+        <div class="split-layout">
+          <div class="split-layout-left">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 25%;">Símbolo</th>
+                  <th>Significado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong style="color: #38bdf8; font-family: 'Fira Code', monospace;">\(t_i\)</strong></td><td style="text-align: left;">Termo presente na consulta e no documento</td></tr>
+                <tr><td><strong style="color: #38bdf8; font-family: 'Fira Code', monospace;">\(N\)</strong></td><td style="text-align: left;">Total de documentos na coleção</td></tr>
+                <tr><td><strong style="color: #38bdf8; font-family: 'Fira Code', monospace;">\(n\)</strong></td><td style="text-align: left;">Número de documentos que contêm o termo \(t_i\)</td></tr>
+                <tr><td><strong style="color: #38bdf8; font-family: 'Fira Code', monospace;">\(R\)</strong></td><td style="text-align: left;">Número de documentos marcados como relevantes</td></tr>
+                <tr><td><strong style="color: #38bdf8; font-family: 'Fira Code', monospace;">\(r\)</strong></td><td style="text-align: left;">Número de documentos relevantes que contêm o termo \(t_i\)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="split-layout-right">
+            <ul style="font-size: 1.15rem; line-height: 1.75;">
+              <li>Pesos podem ser calculados para os termos em função da razão estimadas por meio de contagens</li>
+              <li style="margin-top: 10px;"><strong>Na primeira iteração</strong>
+                <div class="formula boxed">$$w_{i0} = \text{IDF}_i = \log(N / n)$$</div>
+              </li>
+              <li style="margin-top: 10px;"><strong>Nas iterações com feedback de relevância</strong>
+                <div class="formula boxed">$$w_{ik} = \log\left(\frac{r \times (N - R - n + r)}{(n - r) \times (R - r)}\right)$$</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="presenter-badge matheus">Apresentador: Matheus</span>
+      <span class="slide-indicator" onclick="toggleOverview()">Slide 12 / 22</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 13 (Página 13 do PDF) -->
+  <div class="slide" data-presenter="matheus">
+    <div>
+      <h1>Função de Busca</h1>
+      <div class="content" style="margin-top: 10px;">
+        <div class="split-layout">
+          <div class="split-layout-left">
+            <ul style="font-size: 1.15rem; line-height: 1.75;">
+              <li>Portanto, a similaridade entre documentos e consulta pode ser calculada para os \(t\) termos da consulta utilizando a formula:
+                <div class="formula boxed" style="margin: 16px 0; font-size: 1.35rem;">
+                  $$\text{sim}(q, d) = \sum_{i=1}^t (w_{ik} \times q_i \times d_i)$$
+                </div>
+              </li>
+              <li>A similaridade entre a consulta e o documento consiste na <strong>soma dos pesos dos termos da consulta que ocorrem no documento</strong>.</li>
+            </ul>
+          </div>
+
+          <div class="split-layout-right">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 25%;">Símbolo</th>
+                  <th>Significado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong style="color: #38bdf8; font-family: 'Fira Code', monospace;">q</strong></td><td style="text-align: left;">Consulta realizada</td></tr>
+                <tr><td><strong style="color: #38bdf8; font-family: 'Fira Code', monospace;">d</strong></td><td style="text-align: left;">Documento analisado</td></tr>
+                <tr><td><strong style="color: #38bdf8; font-family: 'Fira Code', monospace;">t</strong></td><td style="text-align: left;">Número de termos considerados</td></tr>
+                <tr><td><strong style="color: #38bdf8; font-family: 'Fira Code', monospace;">\(w_{ik}\)</strong></td><td style="text-align: left;">Peso do termo \(i\) na iteração \(k\)</td></tr>
+                <tr><td><strong style="color: #38bdf8; font-family: 'Fira Code', monospace;">\(q_i\)</strong></td><td style="text-align: left;">1 se o termo \(i\) está na consulta; 0 caso contrário</td></tr>
+                <tr><td><strong style="color: #38bdf8; font-family: 'Fira Code', monospace;">\(d_i\)</strong></td><td style="text-align: left;">1 se o termo \(i\) está no documento; 0 caso contrário</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="presenter-badge matheus">Apresentador: Matheus</span>
+      <span class="slide-indicator" onclick="toggleOverview()">Slide 13 / 22</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 14 (Página 14 do PDF) -->
+  <div class="slide" data-presenter="matheus">
+    <div>
+      <h1>Exemplo de Cálculo de Similaridade</h1>
+      <div class="content" style="margin-top: 10px;">
+        <div class="split-layout">
+          <div class="split-layout-left">
+            <p style="font-size: 1.1rem; color: #38bdf8; font-weight: 700; margin-bottom: 8px;">Representação da consulta e do documento:</p>
+            <table>
+              <thead>
+                <tr>
+                  <th>Termo</th>
+                  <th>Presente na consulta (\(q_i\))</th>
+                  <th>Presente no documento (\(d_i\))</th>
+                  <th>Peso (\(w_i\))</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Brasil</strong></td><td class="cell-one">1</td><td class="cell-one">1</td><td>0,5</td></tr>
+                <tr><td><strong>Olimpíada</strong></td><td class="cell-one">1</td><td class="cell-one">1</td><td>0,2</td></tr>
+                <tr><td><strong>Londres</strong></td><td class="cell-one">1</td><td class="cell-one">1</td><td>0,1</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="split-layout-right">
+            <ul style="font-size: 1.1rem; line-height: 1.7;">
+              <li><strong>Consulta (q):</strong> Brasil Olimpíada Londres</li>
+              <li><strong>Documento (d):</strong> Brasil em Londres 2012<br>
+                <em style="color: #94a3b8;">“O Brasil não foi bem no quadro das medalhas da Olimpíada de Londres 2012…”</em>
+              </li>
+              <li style="margin-top: 10px;"><strong>Cálculo da similaridade:</strong>
+                <div class="formula boxed" style="margin: 8px 0; font-size: 1.05rem;">
+                  $$\text{sim}(q, d) = (0,5 \times 1 \times 1) + (0,2 \times 1 \times 1) + (0,1 \times 1 \times 1)$$
+                  $$\text{sim}(q, d) = 0,5 + 0,2 + 0,1 = \mathbf{0,8}$$
+                </div>
+              </li>
+              <li>Os três termos aparecem na consulta e no documento. Por isso, todos contribuem com seus respectivos pesos para a pontuação final.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="presenter-badge matheus">Apresentador: Matheus</span>
+      <span class="slide-indicator" onclick="toggleOverview()">Slide 14 / 22</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 15 (Página 15 do PDF) -->
+  <div class="slide" data-presenter="matheus">
+    <div>
+      <h1>Exemplo de Cálculo de Pesos (IDF)</h1>
+      <div class="content" style="margin-top: 10px;">
+        <div class="split-layout">
+          <div class="split-layout-left">
+            <table>
+              <thead>
+                <tr>
+                  <th>Doc</th>
+                  <th style="color: #f87171;">t1</th>
+                  <th style="color: #f87171;">t2</th>
+                  <th style="color: #f87171;">t3</th>
+                  <th style="color: #38bdf8;">Sim</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong style="color: #f87171;">d1</strong></td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-one">1</td><td class="cell-sim">0,51</td></tr>
+                <tr><td><strong style="color: #f87171;">d2</strong></td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-zero">0</td><td class="cell-sim">0,15</td></tr>
+                <tr><td><strong style="color: #f87171;">d3</strong></td><td class="cell-zero">0</td><td class="cell-one">1</td><td class="cell-one">1</td><td class="cell-sim">0,61</td></tr>
+                <tr><td><strong style="color: #f87171;">d4</strong></td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-zero">0</td><td class="cell-sim">0,15</td></tr>
+                <tr><td><strong style="color: #f87171;">d5</strong></td><td class="cell-one">1</td><td class="cell-one">1</td><td class="cell-one">1</td><td class="cell-sim">0,76</td></tr>
+                <tr><td><strong style="color: #f87171;">d6</strong></td><td class="cell-one">1</td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-sim">0,39</td></tr>
+                <tr><td><strong style="color: #f87171;">d7</strong></td><td class="cell-zero">0</td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-sim">0,24</td></tr>
+                <tr style="border-top: 1.5px solid #38bdf8;">
+                  <td><strong style="color: #38bdf8;">q</strong></td><td>1</td><td>1</td><td>1</td>
+                  <td rowspan="2" style="font-weight: 700; color: #34d399; font-size: 1.1rem; vertical-align: middle;">N=7</td>
+                </tr>
+                <tr>
+                  <td><strong style="color: #94a3b8;">n</strong></td><td>5</td><td>4</td><td>3</td>
+                </tr>
+                <tr style="background: rgba(56, 189, 248, 0.12); font-weight: 700;">
+                  <td style="color: #34d399;">peso</td><td>0,15</td><td>0,24</td><td>0,37</td><td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="split-layout-right" style="justify-content: center;">
+            <ul style="font-size: 1.25rem; line-height: 1.8;">
+              <li>$$\text{IDF}_i = \log_{10}(N / n)$$</li>
+              <li style="margin-top: 16px;">
+                $$\text{IDF}_{t1} = \log_{10}(7 / 5) = \log_{10}(1,4) \approx \mathbf{0,15}$$
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="presenter-badge matheus">Apresentador: Matheus</span>
+      <span class="slide-indicator" onclick="toggleOverview()">Slide 15 / 22</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 16 (Página 16 do PDF) -->
+  <div class="slide" data-presenter="matheus">
+    <div>
+      <h1>Cálculo dos Pesos (1ª Iteração)</h1>
+      <div class="content" style="margin-top: 10px;">
+        <div class="split-layout">
+          <div class="split-layout-left">
+            <table>
+              <thead>
+                <tr>
+                  <th>Doc</th>
+                  <th style="color: #f87171;">t1</th>
+                  <th style="color: #f87171;">t2</th>
+                  <th style="color: #f87171;">t3</th>
+                  <th style="color: #38bdf8;">Sim</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong style="color: #f87171;">d1</strong></td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-one">1</td><td class="cell-sim">0,51</td></tr>
+                <tr><td><strong style="color: #f87171;">d2</strong></td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-zero">0</td><td class="cell-sim">0,15</td></tr>
+                <tr><td><strong style="color: #f87171;">d3</strong></td><td class="cell-zero">0</td><td class="cell-one">1</td><td class="cell-one">1</td><td class="cell-sim">0,61</td></tr>
+                <tr><td><strong style="color: #f87171;">d4</strong></td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-zero">0</td><td class="cell-sim">0,15</td></tr>
+                <tr><td><strong style="color: #f87171;">d5</strong></td><td class="cell-one">1</td><td class="cell-one">1</td><td class="cell-one">1</td><td class="cell-sim">0,76</td></tr>
+                <tr><td><strong style="color: #f87171;">d6</strong></td><td class="cell-one">1</td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-sim">0,39</td></tr>
+                <tr><td><strong style="color: #f87171;">d7</strong></td><td class="cell-zero">0</td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-sim">0,24</td></tr>
+                <tr style="border-top: 1.5px solid #38bdf8;">
+                  <td><strong style="color: #38bdf8;">q</strong></td><td>1</td><td>1</td><td>1</td>
+                  <td rowspan="2" style="font-weight: 700; color: #34d399; font-size: 1.1rem; vertical-align: middle;">N=7</td>
+                </tr>
+                <tr>
+                  <td><strong style="color: #94a3b8;">n</strong></td><td>5</td><td>4</td><td>3</td>
+                </tr>
+                <tr style="background: rgba(56, 189, 248, 0.12); font-weight: 700;">
+                  <td style="color: #34d399;">peso</td><td>0,15</td><td>0,24</td><td>0,37</td><td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="split-layout-right">
+            <ul style="font-size: 1.12rem; line-height: 1.75;">
+              <li><strong>Consulta:</strong> t1, t2, t3, Primeira interação (peso = IDF)</li>
+              <li style="margin-top: 10px;"><strong>Cálculo dos pesos:</strong>
+                <ul style="margin-top: 6px;">
+                  <li>\(\text{IDF}_i = \log_{10}(N / n)\)</li>
+                  <li>\(t_1\): \(\log_{10}(7 / 5) \approx \mathbf{0,15}\)</li>
+                  <li>\(t_2\): \(\log_{10}(7 / 4) \approx \mathbf{0,24}\)</li>
+                  <li>\(t_3\): \(\log_{10}(7 / 3) \approx \mathbf{0,37}\)</li>
+                </ul>
+              </li>
+              <li style="margin-top: 14px;"><strong>Recuperados:</strong>
+                <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(52, 211, 153, 0.3); border-radius: 8px; padding: 10px 14px; margin-top: 6px; font-weight: 700; color: #34d399; font-family: 'Fira Code', monospace;">
+                  d5, d1, d6, d7, [d2, d4]
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="presenter-badge matheus">Apresentador: Matheus</span>
+      <span class="slide-indicator" onclick="toggleOverview()">Slide 16 / 22</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 17 (Página 17 do PDF) -->
+  <div class="slide" data-presenter="matheus">
+    <div>
+      <h1>Similaridade na 1ª Iteração</h1>
+      <div class="content" style="margin-top: 10px;">
+        <div class="split-layout">
+          <div class="split-layout-left">
+            <table>
+              <thead>
+                <tr>
+                  <th>Doc</th>
+                  <th style="color: #f87171;">t1</th>
+                  <th style="color: #f87171;">t2</th>
+                  <th style="color: #f87171;">t3</th>
+                  <th style="color: #38bdf8;">Sim</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong style="color: #f87171;">d1</strong></td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-one">1</td><td class="cell-sim">0,51</td></tr>
+                <tr><td><strong style="color: #f87171;">d2</strong></td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-zero">0</td><td class="cell-sim">0,15</td></tr>
+                <tr><td><strong style="color: #f87171;">d3</strong></td><td class="cell-zero">0</td><td class="cell-one">1</td><td class="cell-one">1</td><td class="cell-sim">0,61</td></tr>
+                <tr><td><strong style="color: #f87171;">d4</strong></td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-zero">0</td><td class="cell-sim">0,15</td></tr>
+                <tr><td><strong style="color: #f87171;">d5</strong></td><td class="cell-one">1</td><td class="cell-one">1</td><td class="cell-one">1</td><td class="cell-sim">0,76</td></tr>
+                <tr><td><strong style="color: #f87171;">d6</strong></td><td class="cell-one">1</td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-sim">0,39</td></tr>
+                <tr><td><strong style="color: #f87171;">d7</strong></td><td class="cell-zero">0</td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-sim">0,24</td></tr>
+                <tr style="border-top: 1.5px solid #38bdf8;">
+                  <td><strong style="color: #38bdf8;">q</strong></td><td>1</td><td>1</td><td>1</td>
+                  <td rowspan="2" style="font-weight: 700; color: #34d399; font-size: 1.1rem; vertical-align: middle;">N=7</td>
+                </tr>
+                <tr>
+                  <td><strong style="color: #94a3b8;">n</strong></td><td>5</td><td>4</td><td>3</td>
+                </tr>
+                <tr style="background: rgba(56, 189, 248, 0.12); font-weight: 700;">
+                  <td style="color: #34d399;">peso</td><td>0,15</td><td>0,24</td><td>0,37</td><td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="split-layout-right">
+            <ul style="font-size: 1.12rem; line-height: 1.75;">
+              <li><strong>Cálculo com os pesos arredondados</strong>
+                <div class="formula boxed" style="margin: 8px 0; font-size: 0.95rem;">
+                  $$\text{sim}(q, d_1) = (0,15 \times 1 \times 1) + (0,24 \times 1 \times 0) + (0,37 \times 1 \times 1) = \mathbf{0,52}$$
+                </div>
+              </li>
+              <li style="margin-top: 12px;"><strong>Ordem de recuperação:</strong>
+                <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 10px 14px; margin-top: 6px; font-weight: 700; color: #38bdf8; font-family: 'Fira Code', monospace; font-size: 1.05rem;">
+                  d5 &rarr; d3 &rarr; d1 &rarr; d6 &rarr; d7 &rarr; [d2, d4]
+                </div>
+              </li>
+              <li style="margin-top: 10px; color: #fbbf24;"><strong>Obs:</strong> d2 e d4 empatados</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="presenter-badge matheus">Apresentador: Matheus</span>
+      <span class="slide-indicator" onclick="toggleOverview()">Slide 17 / 22</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 18 (Página 18 do PDF) -->
+  <div class="slide" data-presenter="matheus">
+    <div>
+      <h1>Feedback de Relevância (2ª Iteração)</h1>
+      <div class="content" style="margin-top: 10px;">
+        <div class="split-layout">
+          <div class="split-layout-left">
+            <table>
+              <thead>
+                <tr>
+                  <th>Doc</th>
+                  <th style="color: #f87171;">t1</th>
+                  <th style="color: #f87171;">t2</th>
+                  <th style="color: #f87171;">t3</th>
+                  <th style="color: #34d399;">Rel</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong style="color: #f87171;">d1</strong></td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-one">1</td><td class="cell-zero">0</td></tr>
+                <tr><td><strong style="color: #f87171;">d2</strong></td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-zero">0</td><td class="cell-zero">0</td></tr>
+                <tr style="background: rgba(52, 211, 153, 0.1);"><td><strong style="color: #34d399;">d3</strong></td><td class="cell-zero">0</td><td class="cell-one">1</td><td class="cell-one">1</td><td style="color: #34d399; font-weight: 700;">1</td></tr>
+                <tr><td><strong style="color: #f87171;">d4</strong></td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-zero">0</td><td class="cell-zero">0</td></tr>
+                <tr style="background: rgba(52, 211, 153, 0.1);"><td><strong style="color: #34d399;">d5</strong></td><td class="cell-one">1</td><td class="cell-one">1</td><td class="cell-one">1</td><td style="color: #34d399; font-weight: 700;">1</td></tr>
+                <tr><td><strong style="color: #f87171;">d6</strong></td><td class="cell-one">1</td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-zero">0</td></tr>
+                <tr><td><strong style="color: #f87171;">d7</strong></td><td class="cell-zero">0</td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-zero">0</td></tr>
+                <tr style="border-top: 1.5px solid #38bdf8;">
+                  <td><strong style="color: #38bdf8;">q</strong></td><td>1</td><td>1</td><td>1</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td><strong style="color: #94a3b8;">n</strong></td><td>5</td><td>4</td><td>3</td>
+                  <td style="font-weight: 700; color: #34d399;">N=8</td>
+                </tr>
+                <tr>
+                  <td><strong style="color: #94a3b8;">r</strong></td><td>0,9</td><td>1,9</td><td>1,9</td>
+                  <td style="font-weight: 700; color: #34d399;">R=2</td>
+                </tr>
+                <tr style="background: rgba(56, 189, 248, 0.12); font-weight: 700;">
+                  <td style="color: #34d399;">peso</td>
+                  <td style="color: #f87171;">-0,42</td>
+                  <td style="color: #38bdf8;">1,55</td>
+                  <td style="color: #38bdf8;">1,93</td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="split-layout-right">
+            <ul style="font-size: 1.05rem; line-height: 1.65;">
+              <li><strong>Consulta:</strong> t1 t2 t3, segunda interação com <strong>d3 e d5</strong> marcados como relevantes</li>
+              <li style="color: #cbd5e1;">No calculo de peso para um termo, para evitar divisão por zero e por log de número negativo, <strong>subtraia 0,1 de r e some 1 a N</strong></li>
+              <li style="margin-top: 8px;"><strong>CÁLCULO DO PESO DO TERMO \(t_1\):</strong>
+                <div class="formula boxed" style="margin: 6px 0; font-size: 0.88rem; text-align: left; padding: 10px 14px;">
+                  $$w_{t1} = \log_{10}([r \times (N - R - n + r)] / [(n - r) \times (R - r)])$$
+                  Substituindo os valores:<br>
+                  $$w_{t1} = \log_{10}([0,9 \times (8 - 2 - 5 + 0,9)] / [(5 - 0,9) \times (2 - 0,9)])$$
+                  $$w_{t1} = \log_{10}((0,9 \times 1,9) / (4,1 \times 1,1))$$
+                  $$w_{t1} = \log_{10}(1,71 / 4,51) \approx \log_{10}(0,379) \approx \mathbf{-0,42}$$
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="presenter-badge matheus">Apresentador: Matheus</span>
+      <span class="slide-indicator" onclick="toggleOverview()">Slide 18 / 22</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 19 (Página 19 do PDF) -->
+  <div class="slide" data-presenter="matheus">
+    <div>
+      <h1>Similaridade na 2ª Iteração</h1>
+      <div class="content" style="margin-top: 10px;">
+        <div class="split-layout">
+          <div class="split-layout-left">
+            <table>
+              <thead>
+                <tr>
+                  <th>Doc</th>
+                  <th style="color: #f87171;">t1</th>
+                  <th style="color: #f87171;">t2</th>
+                  <th style="color: #f87171;">t3</th>
+                  <th style="color: #34d399;">Rel</th>
+                  <th style="color: #38bdf8;">Sim</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong style="color: #f87171;">d1</strong></td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-one">1</td><td>0</td><td class="cell-sim">1,51</td></tr>
+                <tr><td><strong style="color: #f87171;">d2</strong></td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-zero">0</td><td>0</td><td style="color:#f87171; font-weight:700;">-0,42</td></tr>
+                <tr style="background: rgba(52, 211, 153, 0.1);"><td><strong style="color: #34d399;">d3</strong></td><td class="cell-zero">0</td><td class="cell-one">1</td><td class="cell-one">1</td><td style="color:#34d399; font-weight:700;">1</td><td class="cell-sim" style="color:#34d399;">3,48</td></tr>
+                <tr><td><strong style="color: #f87171;">d4</strong></td><td class="cell-one">1</td><td class="cell-zero">0</td><td class="cell-zero">0</td><td>0</td><td style="color:#f87171; font-weight:700;">-0,42</td></tr>
+                <tr style="background: rgba(52, 211, 153, 0.1);"><td><strong style="color: #34d399;">d5</strong></td><td class="cell-one">1</td><td class="cell-one">1</td><td class="cell-one">1</td><td style="color:#34d399; font-weight:700;">1</td><td class="cell-sim" style="color:#34d399;">3,05</td></tr>
+                <tr><td><strong style="color: #f87171;">d6</strong></td><td class="cell-one">1</td><td class="cell-one">1</td><td class="cell-zero">0</td><td>0</td><td class="cell-sim">1,13</td></tr>
+                <tr><td><strong style="color: #f87171;">d7</strong></td><td class="cell-zero">0</td><td class="cell-one">1</td><td class="cell-zero">0</td><td>0</td><td class="cell-sim">1,55</td></tr>
+                <tr style="border-top: 1.5px solid #38bdf8;">
+                  <td><strong style="color: #38bdf8;">q</strong></td><td>1</td><td>1</td><td>1</td>
+                  <td colspan="2"></td>
+                </tr>
+                <tr>
+                  <td><strong style="color: #94a3b8;">n</strong></td><td>5</td><td>4</td><td>3</td>
+                  <td colspan="2" style="font-weight: 700; color: #34d399;">N=8</td>
+                </tr>
+                <tr>
+                  <td><strong style="color: #94a3b8;">r</strong></td><td>0,9</td><td>1,9</td><td>1,9</td>
+                  <td colspan="2" style="font-weight: 700; color: #34d399;">R=2</td>
+                </tr>
+                <tr style="background: rgba(56, 189, 248, 0.12); font-weight: 700;">
+                  <td style="color: #34d399;">peso</td>
+                  <td style="color: #f87171;">-0,42</td>
+                  <td style="color: #38bdf8;">1,55</td>
+                  <td style="color: #38bdf8;">1,93</td>
+                  <td colspan="2"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="split-layout-right">
+            <ul style="font-size: 1.05rem; line-height: 1.65;">
+              <li><strong>Consulta:</strong> t1 t2 t3, segunda interação com d3 e d5 marcados como relevantes</li>
+              <li style="color: #cbd5e1;">No calculo de peso para um termo, para evitar divisão por zero e por log de número negativo, subtraia 0,1 de r e some 1 a N</li>
+              <li style="margin-top: 8px;"><strong>CÁLCULO DA SIMILARIDADE:</strong>
+                <div class="formula boxed" style="margin: 6px 0; font-size: 0.92rem; text-align: left; padding: 10px 14px;">
+                  $$\text{sim}(q, d_1) = (-0,42 \times 1 \times 1) + (1,55 \times 1 \times 0) + (1,93 \times 1 \times 1)$$
+                  $$\text{sim}(q, d_1) = -0,42 + 0 + 1,93 = \mathbf{1,51}$$
+                </div>
+              </li>
+              <li style="margin-top: 10px;"><strong>Recuperados:</strong>
+                <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(52, 211, 153, 0.3); border-radius: 8px; padding: 10px 14px; margin-top: 6px; font-weight: 700; color: #34d399; font-family: 'Fira Code', monospace; font-size: 1.05rem;">
+                  d3, d5, d7, d1, d6
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="presenter-badge matheus">Apresentador: Matheus</span>
+      <span class="slide-indicator" onclick="toggleOverview()">Slide 19 / 22</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 20 (Página 20 do PDF) -->
+  <div class="slide" data-presenter="both">
+    <div>
+      <h1>Vantagens</h1>
+      <div class="content" style="margin-top: 28px;">
+        <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(52, 211, 153, 0.3); border-radius: 14px; padding: 28px 36px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+          <ul style="font-size: 1.35rem; line-height: 1.85; margin-left: 20px;">
+            <li>A maior vantagem do modelo probabilístico, na teoria, é sua <strong>otimalidade</strong>, ou seja, os documentos são ranqueados de forma decrescente de acordo com sua probabilidade de serem relevantes, com base na informação disponível ao sistema.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="presenter-badge both">Matheus & Rafael</span>
+      <span class="slide-indicator" onclick="toggleOverview()">Slide 20 / 22</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 21 (Página 21 do PDF) -->
+  <div class="slide" data-presenter="both">
+    <div>
+      <h1>Desvantagens</h1>
+      <div class="content" style="margin-top: 24px;">
+        <div style="background: rgba(244, 63, 94, 0.08); border: 1px solid rgba(248, 113, 113, 0.3); border-radius: 14px; padding: 26px 34px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+          <ul style="font-size: 1.25rem; line-height: 1.8; margin-left: 20px;">
+            <li>As desvantagens incluem:
+              <ol style="margin-top: 14px; font-size: 1.15rem; margin-left: 24px;">
+                <li style="margin-bottom: 12px;"><strong>(1)</strong> a necessidade de estimar a separação inicial dos documentos em conjuntos de relevantes e não relevantes;</li>
+                <li style="margin-bottom: 12px;"><strong>(2)</strong> o fato de que o método não leva em consideração a frequência na qual um termo de indexação ocorre em um documento (isto é, todos os pesos são binários, falta de normalização TF);</li>
+                <li><strong>(3)</strong> não normalização pelo tamanho dos documentos (variações mais avançadas do modelo probabilístico surgem para solucionar isso).</li>
+              </ol>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="presenter-badge both">Matheus & Rafael</span>
+      <span class="slide-indicator" onclick="toggleOverview()">Slide 21 / 22</span>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 22 (LABORATÓRIO / MODELO REAL INTERATIVO) -->
+  <div class="slide" data-presenter="lab" style="padding: 24px 34px; height: 86vh;">
+    <div style="margin-bottom: 8px;">
+      <h1 style="font-size: 1.8rem; margin-bottom: 2px;">Laboratório Interativo: Modelo Probabilístico em Ação</h1>
+      <h2 style="font-size: 0.94rem; margin-bottom: 10px;">Insira documentos e consultas para acompanhar a dedução e o cálculo passo a passo em tempo real</h2>
+    </div>
+
+    <!-- Interface do Simulador -->
+    <div class="sim-container" style="flex-grow: 1;">
+      
+      <!-- Painel Esquerdo: Entradas -->
+      <div class="sim-panel">
+        
+        <div>
+          <div class="sim-label" style="margin-bottom: 6px;">
+            <span>Coleções & Gerador Sintético</span>
+          </div>
+          <div class="sim-presets">
+            <button class="preset-btn" onclick="loadPreset('todo')">Tabelas 2.10 e 2.11 ("to do")</button>
+            <button class="preset-btn btn-generator-highlight" onclick="quickGenerate100Docs()" title="Gerar automaticamente 100 docs baseado na consulta: 10% 1 termo, 5% múltiplos termos">⚡ Gerar 100 Docs (10% / 5%)</button>
+            <button class="preset-btn" onclick="openGeneratorModal()" title="Configurar proporções e tamanho da coleção sintética">⚙️ Configurar Gerador...</button>
+            <button class="preset-btn" onclick="loadPreset('clear')">Limpar</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="sim-label" style="margin-bottom: 6px;">
+            <span>Coleção de Documentos (\(N\))</span>
+            <span id="docCountBadge" style="color: #38bdf8; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;">N = 4</span>
+          </div>
+          <input type="text" id="docListSearch" class="sim-input" placeholder="🔍 Filtrar lista de docs por texto ou ID..." oninput="filterDocInputs(this.value)" style="margin-bottom: 6px; font-size: 0.76rem; padding: 5px 9px;">
+          <div id="docListContainer" style="max-height: 170px; overflow-y: auto; padding-right: 4px;">
+            <!-- Documentos gerados via JS -->
+          </div>
+          <div style="display: flex; gap: 6px; margin-top: 6px;">
+            <button class="btn-add-doc" onclick="addNewDocInput()">+ Adicionar Documento</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="sim-label" style="margin-bottom: 6px;">
+            <span>Consulta do Usuário (\(q\))</span>
+          </div>
+          <input type="text" id="queryInput" class="sim-input" value="to do" placeholder="Ex: to do" oninput="onQueryInputChange()">
+        </div>
+
+        <div>
+          <div class="sim-label" style="margin-bottom: 6px;">
+            <span>Fórmula Probabilística</span>
+          </div>
+          <select id="formulaSelect" class="sim-select" onchange="onModelChange()">
+            <option value="eq218" selected>Equação 2.18 (Corrigida sem pesos negativos)</option>
+            <option value="eq217">Equação 2.17 (Bootstrap com -n_i)</option>
+            <option value="eqRSJ">Equação Robertson-Sparck Jones (+0,5 e Feedback R)</option>
+            <option value="eq219">Equação 2.19 (Croft & Harper)</option>
+          </select>
+          
+          <!-- Box Dinâmico: Para que é indicado cada modelo -->
+          <div id="modelRecommendationBox" class="model-rec-card">
+            <!-- Preenchido dinamicamente via JS -->
+          </div>
+        </div>
+
+        <button class="btn-calculate" onclick="runSearch()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span>Executar Busca & Ver Passo a Passo</span>
+        </button>
+
+      </div>
+
+      <!-- Painel Direito: Resultados e Passo a Passo -->
+      <div class="sim-results" id="simResultsArea">
+        <!-- Preenchido dinamicamente pelo algoritmo -->
+      </div>
+
+    </div>
+
+    <div class="footer" style="padding-top: 10px;">
+      <span class="presenter-badge lab">Laboratório de Busca</span>
+      <span class="slide-indicator" onclick="toggleOverview()">Slide 22 / 22</span>
+    </div>
+  </div>
+
+</div>
+
+</div>
+
+<!-- Barra de Navegação Flutuante Inferior -->
+<div class="nav-bar">
+  <button class="nav-btn" id="btnPrev" title="Slide Anterior (Seta Esquerda / H)">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    Anterior
+  </button>
+  <button class="nav-btn" id="btnNext" title="Próximo Slide (Seta Direita / Barra de Espaço / L)">
+    Próximo
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+  <span class="nav-hint">◄ ► ou Espaço | Tecla O: Índice | F: Tela Cheia</span>
+</div>
+
+<!-- Modal com Grid de Slides (Índice / Visão Geral) -->
+<div class="overview-modal" id="overviewModal">
+  <div class="overview-header">
+    <div class="overview-title">Índice da Apresentação (22 Slides)</div>
+    <button class="tool-btn" onclick="toggleOverview()" style="font-size: 1.2rem; color: #cbd5e1;">✕</button>
+  </div>
+  <div class="overview-grid" id="overviewGrid">
+    <!-- Gerado dinamicamente via script -->
+  </div>
+</div>
+
+<!-- Modal do Gerador Sintético de Documentos -->
+<div class="generator-modal" id="generatorModal">
+  <div class="generator-modal-content">
+    <div class="generator-modal-header">
+      <div>
+        <div class="generator-modal-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <span>Gerador Sintético de Documentos</span>
+        </div>
+        <div class="generator-modal-subtitle">Gere uma base sob medida com base nos termos da consulta para avaliar o comportamento do modelo probabilístico</div>
+      </div>
+      <button class="tool-btn" onclick="closeGeneratorModal()" style="font-size: 1.1rem; color: #cbd5e1;">✕</button>
+    </div>
+
+    <div class="gen-row">
+      <div class="gen-row-header">
+        <span>Termos da Consulta Detectados (\(q\)):</span>
+      </div>
+      <div id="genQueryTermsBadge" style="display: flex; gap: 6px; flex-wrap: wrap;"></div>
+    </div>
+
+    <div class="gen-row">
+      <div class="gen-row-header">
+        <span>Tamanho Total da Coleção (\(N\)):</span>
+        <span id="genNBadge" class="gen-badge-val">100 documentos</span>
+      </div>
+      <div class="gen-quick-sizes">
+        <button class="gen-size-btn" onclick="setGenN(20)">20 docs</button>
+        <button class="gen-size-btn" onclick="setGenN(50)">50 docs</button>
+        <button class="gen-size-btn active" id="btnGenSize100" onclick="setGenN(100)">100 docs</button>
+        <button class="gen-size-btn" onclick="setGenN(200)">200 docs</button>
+      </div>
+      <input type="range" id="genNRange" class="gen-slider" min="10" max="300" step="5" value="100" oninput="updateGenSliders()">
+    </div>
+
+    <div class="gen-row">
+      <div class="gen-row-header">
+        <span>% com 1 Único Termo da Consulta:</span>
+        <span id="genSingleBadge" class="gen-badge-val">10% (10 docs)</span>
+      </div>
+      <input type="range" id="genSingleRange" class="gen-slider" min="0" max="60" step="1" value="10" oninput="updateGenSliders()">
+    </div>
+
+    <div class="gen-row">
+      <div class="gen-row-header">
+        <span>% com Mais de 1 Termo da Consulta (&gt; 1):</span>
+        <span id="genMultiBadge" class="gen-badge-val">5% (5 docs)</span>
+      </div>
+      <input type="range" id="genMultiRange" class="gen-slider" min="0" max="40" step="1" value="5" oninput="updateGenSliders()">
+    </div>
+
+    <div class="gen-row">
+      <div class="gen-row-header">
+        <span>% de Documentos Neutros (sem termos da consulta):</span>
+        <span id="genNeutralBadge" class="gen-badge-val" style="color: #94a3b8; background: rgba(255,255,255,0.06);">85% (85 docs)</span>
+      </div>
+    </div>
+
+    <div class="gen-row">
+      <div class="gen-row-header">
+        <span>Vocabulário de Contexto:</span>
+      </div>
+      <select id="genVocabSelect" class="sim-select" style="font-size: 0.84rem;">
+        <option value="words" selected>Com palavras técnicas de contexto (algoritmo, sistema, dados, rede...)</option>
+        <option value="simple">Apenas termos puros da busca e identificadores mínimos</option>
+      </select>
+    </div>
+
+    <div class="gen-preview-box" id="genSummaryPreview">
+      <!-- Resumo ao vivo -->
+    </div>
+
+    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px;">
+      <button class="preset-btn" onclick="closeGeneratorModal()">Cancelar</button>
+      <button class="btn-calculate" style="margin-top: 0;" onclick="executeModalGeneration()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        <span>Gerar Coleção e Executar</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ============================================================
+     CONTROLE DE NAVEGAÇÃO DOS SLIDES
+     ============================================================ */
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.slide');
+  const totalSlides = slides.length;
+  const progressBar = document.getElementById('progressBar');
+  const btnPrev = document.getElementById('btnPrev');
+  const btnNext = document.getElementById('btnNext');
+
+  function updateSlide(index) {
+    if (index < 0) index = 0;
+    if (index >= totalSlides) index = totalSlides - 1;
+
+    slides[currentSlide].classList.remove('active');
+    currentSlide = index;
+    slides[currentSlide].classList.add('active');
+
+    // Atualiza barra de progresso
+    const progressPercent = ((currentSlide + 1) / totalSlides) * 100;
+    progressBar.style.width = progressPercent + '%';
+
+    // Atualiza estado dos botões de navegação
+    btnPrev.disabled = (currentSlide === 0);
+    btnNext.disabled = (currentSlide === totalSlides - 1);
+
+    // Tipografia MathJax no slide recém-exibido
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      window.MathJax.typesetPromise([slides[currentSlide]]).catch(() => {});
+    }
+
+    // Se estiver no slide do laboratório, executa busca automática
+    if (slides[currentSlide].getAttribute('data-presenter') === 'lab') {
+      setTimeout(() => runSearch(), 50);
+    }
+  }
+
+  function nextSlide() {
+    if (currentSlide < totalSlides - 1) updateSlide(currentSlide + 1);
+  }
+
+  function prevSlide() {
+    if (currentSlide > 0) updateSlide(currentSlide - 1);
+  }
+
+  btnPrev.addEventListener('click', prevSlide);
+  btnNext.addEventListener('click', nextSlide);
+
+  document.getElementById('btnGoToLab').addEventListener('click', () => {
+    updateSlide(totalSlides - 1);
+  });
+
+  /* ============================================================
+     ATALHOS DE TECLADO
+     ============================================================ */
+  document.addEventListener('keydown', (e) => {
+    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
+      if (e.key === 'Escape') {
+        document.activeElement.blur();
+      }
+      return;
+    }
+
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown' || e.key === 'l' || e.key === 'L') {
+      e.preventDefault();
+      nextSlide();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp' || e.key === 'h' || e.key === 'H') {
+      e.preventDefault();
+      prevSlide();
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      updateSlide(0);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      updateSlide(totalSlides - 1);
+    } else if (e.key === 'o' || e.key === 'O' || e.key === 'Escape') {
+      toggleOverview();
+    } else if (e.key === 'f' || e.key === 'F') {
+      toggleFullscreen();
+    }
+  });
+
+  /* ============================================================
+     TELA CHEIA E IMPRESSÃO
+     ============================================================ */
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      if (document.exitFullscreen) document.exitFullscreen();
+    }
+  }
+  document.getElementById('btnFullscreen').addEventListener('click', toggleFullscreen);
+
+  document.getElementById('btnPrint').addEventListener('click', () => {
+    window.print();
+  });
+
+  /* ============================================================
+     CRONÔMETRO DE APRESENTAÇÃO (40 MINUTOS)
+     ============================================================ */
+  let timerSeconds = 40 * 60;
+  let timerInterval = null;
+  const timerBadge = document.getElementById('timerBadge');
+  const timerText = document.getElementById('timerText');
+
+  function updateTimerDisplay() {
+    const mins = Math.floor(timerSeconds / 60);
+    const secs = timerSeconds % 60;
+    timerText.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  }
+
+  function toggleTimer() {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timerBadge.style.opacity = '0.7';
+    } else {
+      timerBadge.style.opacity = '1';
+      timerInterval = setInterval(() => {
+        if (timerSeconds > 0) {
+          timerSeconds--;
+          updateTimerDisplay();
+        } else {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          timerBadge.style.color = '#f43f5e';
+        }
+      }, 1000);
+    }
+  }
+  timerBadge.addEventListener('click', toggleTimer);
+
+  /* ============================================================
+     MODAL DE ÍNDICE / VISÃO GERAL
+     ============================================================ */
+  const overviewModal = document.getElementById('overviewModal');
+  const overviewGrid = document.getElementById('overviewGrid');
+
+  function buildOverviewGrid() {
+    overviewGrid.innerHTML = '';
+    slides.forEach((slide, idx) => {
+      const h1 = slide.querySelector('h1') ? slide.querySelector('h1').innerText : `Slide ${idx + 1}`;
+      const presenterBadge = slide.querySelector('.presenter-badge');
+      const presenterText = presenterBadge ? presenterBadge.innerText : '';
+
+      const card = document.createElement('div');
+      card.className = 'overview-card' + (idx === currentSlide ? ' current' : '');
+      card.innerHTML = `
+        <div class="overview-card-num">Slide ${idx + 1} de ${totalSlides}</div>
+        <div class="overview-card-title">${h1}</div>
+        <div class="overview-card-speaker">${presenterText}</div>
+      `;
+      card.onclick = () => {
+        updateSlide(idx);
+        toggleOverview();
+      };
+      overviewGrid.appendChild(card);
+    });
+  }
+
+  function toggleOverview() {
+    const isOpen = overviewModal.classList.contains('open');
+    if (!isOpen) {
+      buildOverviewGrid();
+      overviewModal.classList.add('open');
+    } else {
+      overviewModal.classList.remove('open');
+    }
+  }
+  document.getElementById('btnOverview').addEventListener('click', toggleOverview);
+
+  /* ============================================================
+     LABORATÓRIO INTERATIVO (EXATO DO MODELO PROBABILISTICO)
+     ============================================================ */
+let corpus = [
+    { id: "d1", text: "to do", relevant: false },
+    { id: "d2", text: "to", relevant: false },
+    { id: "d3", text: "do", relevant: false },
+    { id: "d4", text: "do", relevant: false }
+  ];
+
+  const presets = {
+    todo: [
+      { id: "d1", text: "to do", relevant: false },
+      { id: "d2", text: "to", relevant: false },
+      { id: "d3", text: "do", relevant: false },
+      { id: "d4", text: "do", relevant: false }
+    ]
+  };
+
+  const contextWords = [
+    "algoritmo", "busca", "sistema", "informacao", "dados", "indice",
+    "pesquisa", "computador", "rede", "banco", "vetor", "probabilidade",
+    "relevancia", "arquivo", "servidor", "processamento", "analise", "texto",
+    "modelo", "consulta", "bayes", "frequencia", "colecao", "memoria"
+  ];
+
+  // -------------------------------------------------------------------------
+  // 1. INDICAÇÃO / RECOMENDAÇÃO DOS MODELOS (Para que serve cada um)
+  // -------------------------------------------------------------------------
+  const modelRecommendations = {
+    eq218: {
+      tag: "Recomendado: Cold Start",
+      tagClass: "cold-start",
+      formula: "w_i = log2((N + 0,5) / (n_i + 0,5))",
+      title: "Equação 2.18 (Correção da Frequência sem Pesos Negativos)",
+      desc: "<strong>🎯 Indicado para:</strong> Primeira busca do usuário (<strong>Cold Start</strong>) quando ainda não há dados de relevância prévia (\(R = 0\)).",
+      details: "<strong>✨ Por que usar:</strong> Elimina o termo \(-n_i\) do numerador da Eq. 2.17. Garante que palavras frequentes da busca (\(n_i > N/2\)) nunca recebam pesos negativos nem prejudiquem documentos relevantes."
+    },
+    eq217: {
+      tag: "Didático: Modelo Histórico",
+      tagClass: "historic",
+      formula: "w_i = log2((N - n_i + 0,5) / (n_i + 0,5))",
+      title: "Equação 2.17 (Bootstrap Clássico de Robertson & Sparck Jones)",
+      desc: "<strong>🎯 Indicado para:</strong> Fins didáticos e estudo formal da dedução original de 1976 (pág. 52 do livro).",
+      details: "<strong>⚠️ Alerta / Limitação:</strong> Quando um termo ocorre em mais de 50% da base (\(n_i > N/2\)), seu peso torna-se <strong>negativo</strong>, penalizando documentos que contêm mais palavras da busca (ver Tabela 2.10)."
+    },
+    eqRSJ: {
+      tag: "Ideal: Com Feedback de Relevância",
+      tagClass: "feedback",
+      formula: "w_i = log2 [ (r_i+0,5)(N-n_i-R+r_i+0,5) / (R-r_i+0,5)(n_i-r_i+0,5) ]",
+      title: "Equação Robertson-Sparck Jones Completa (Feedback R)",
+      desc: "<strong>🎯 Indicado para:</strong> Refinamento iterativo da busca após o usuário avaliar os primeiros resultados.",
+      details: "<strong>🚀 Como funciona:</strong> Ao marcar documentos como <strong>Sim (R)</strong>, o modelo recalcula as probabilidades bayesianas reais usando \(r_i\) e \(R - r_i\), reposicionando os documentos mais promissores no topo."
+    },
+    eq219: {
+      tag: "Automático: Grandes Coleções",
+      tagClass: "automatic",
+      formula: "w_i = log2((N - n_i) / n_i)",
+      title: "Equação 2.19 (Croft & Harper sem Intervenção Humana)",
+      desc: "<strong>🎯 Indicado para:</strong> Grandes acervos indexados (\(N \\gg n_i\)) com automação total e vocabulário esparso.",
+      details: "<strong>⚠️ Alerta do Livro (pág. 55):</strong> Como não possui o amortecimento \(+0,5\), falha em bases de teste pequenas (\(N \\approx n_i\)), gerando divisões por zero ou escores inconsistentes."
+    }
+  };
+
+  function updateModelRecommendation() {
+    const select = document.getElementById('formulaSelect');
+    if (!select) return;
+    const model = modelRecommendations[select.value];
+    const box = document.getElementById('modelRecommendationBox');
+    if (!box || !model) return;
+
+    box.innerHTML = `
+      <div class="model-rec-header">
+        <span class="model-rec-tag ${model.tagClass}">${model.tag}</span>
+        <span class="model-rec-formula">${model.formula}</span>
+      </div>
+      <div class="model-rec-desc">${model.desc}</div>
+      <div class="model-rec-details">${model.details}</div>
+    `;
+  }
+
+  function onModelChange() {
+    updateModelRecommendation();
+    runSearch();
+  }
+
+  // -------------------------------------------------------------------------
+  // 2. GERADOR SINTÉTICO DE DOCUMENTOS BASEADO NA CONSULTA
+  // -------------------------------------------------------------------------
+  function generateSyntheticCorpus(numDocs, pctSingle, pctMulti, useFillerWords = true) {
+    const queryRaw = document.getElementById('queryInput').value;
+    const queryTokens = Array.from(new Set(tokenize(queryRaw)));
+
+    if (queryTokens.length === 0) {
+      alert("Por favor, digite ao menos um termo na Consulta do Usuário (q) antes de gerar a coleção.");
+      return;
+    }
+
+    const nSingle = Math.round(numDocs * (pctSingle / 100));
+    const nMulti = Math.round(numDocs * (pctMulti / 100));
+    const nNeutral = Math.max(0, numDocs - nSingle - nMulti);
+
+    const newDocs = [];
+    let currentId = 1;
+
+    function getFillers(count) {
+      if (!useFillerWords) return "";
+      const available = contextWords.filter(w => !queryTokens.includes(w));
+      const shuffled = [...available].sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, count).join(" ");
+    }
+
+    // 1. Gerar documentos com MÚLTIPLOS termos da busca (> 1 termo)
+    for (let i = 0; i < nMulti; i++) {
+      let chosenTerms = [];
+      if (queryTokens.length >= 2) {
+        const countToPick = queryTokens.length === 2 ? 2 : Math.min(queryTokens.length, 2 + Math.floor(Math.random() * (queryTokens.length - 1)));
+        const shuffled = [...queryTokens].sort(() => 0.5 - Math.random());
+        chosenTerms = shuffled.slice(0, countToPick);
+      } else {
+        chosenTerms = [queryTokens[0]];
+      }
+      const fillers = getFillers(2 + Math.floor(Math.random() * 3));
+      const text = `${chosenTerms.join(" ")} ${fillers}`.trim();
+      newDocs.push({
+        id: `d${currentId++}`,
+        text: text,
+        relevant: false
+      });
+    }
+
+    // 2. Gerar documentos com EXATAMENTE 1 termo da busca
+    for (let i = 0; i < nSingle; i++) {
+      const term = queryTokens[i % queryTokens.length];
+      const fillers = getFillers(2 + Math.floor(Math.random() * 3));
+      const text = `${term} ${fillers}`.trim();
+      newDocs.push({
+        id: `d${currentId++}`,
+        text: text,
+        relevant: false
+      });
+    }
+
+    // 3. Gerar documentos NEUTROS (sem nenhum termo da busca)
+    for (let i = 0; i < nNeutral; i++) {
+      let fillers = getFillers(3 + Math.floor(Math.random() * 3));
+      if (!fillers) {
+        fillers = `documento_neutro_${currentId}`;
+      }
+      newDocs.push({
+        id: `d${currentId++}`,
+        text: fillers,
+        relevant: false
+      });
+    }
+
+    // Embaralhar para distribuição realista
+    corpus = newDocs;
+    docFilterTerm = "";
+    const filterInput = document.getElementById('docListSearch');
+    if (filterInput) filterInput.value = "";
+    
+    renderDocInputs();
+    runSearch();
+  }
+
+  function quickGenerate100Docs() {
+    let q = document.getElementById('queryInput').value.trim();
+    if (!q) {
+      document.getElementById('queryInput').value = "to do";
+    }
+    generateSyntheticCorpus(100, 10, 5, true);
+  }
+
+  function openGeneratorModal() {
+    const modal = document.getElementById('generatorModal');
+    if (!modal) return;
+    const queryRaw = document.getElementById('queryInput').value;
+    const queryTokens = Array.from(new Set(tokenize(queryRaw)));
+    const badgeContainer = document.getElementById('genQueryTermsBadge');
+
+    if (queryTokens.length === 0) {
+      badgeContainer.innerHTML = '<span style="color:#f43f5e; font-size:0.82rem;">Nenhum termo na busca. Digite termos como "to do" na consulta.</span>';
+    } else {
+      badgeContainer.innerHTML = queryTokens.map(t => `<span class="term-pill">${t}</span>`).join(' ');
+    }
+
+    updateGenSliders();
+    modal.classList.add('open');
+  }
+
+  function closeGeneratorModal() {
+    const modal = document.getElementById('generatorModal');
+    if (modal) modal.classList.remove('open');
+  }
+
+  function setGenN(n) {
+    const range = document.getElementById('genNRange');
+    if (range) range.value = n;
+    document.querySelectorAll('.gen-size-btn').forEach(b => {
+      b.classList.toggle('active', b.textContent.includes(String(n)));
+    });
+    updateGenSliders();
+  }
+
+  function updateGenSliders() {
+    const n = parseInt(document.getElementById('genNRange').value, 10);
+    const pSingle = parseInt(document.getElementById('genSingleRange').value, 10);
+    const pMulti = parseInt(document.getElementById('genMultiRange').value, 10);
+    
+    // Corrigir estouro de 100%
+    if (pSingle + pMulti > 95) {
+      document.getElementById('genMultiRange').value = Math.max(0, 95 - pSingle);
+    }
+    const safeMulti = parseInt(document.getElementById('genMultiRange').value, 10);
+    const pNeutral = Math.max(0, 100 - pSingle - safeMulti);
+
+    const nSingle = Math.round(n * (pSingle / 100));
+    const nMulti = Math.round(n * (safeMulti / 100));
+    const nNeutral = Math.max(0, n - nSingle - nMulti);
+
+    document.getElementById('genNBadge').textContent = `${n} documentos`;
+    document.getElementById('genSingleBadge').textContent = `${pSingle}% (${nSingle} docs)`;
+    document.getElementById('genMultiBadge').textContent = `${safeMulti}% (${nMulti} docs)`;
+    document.getElementById('genNeutralBadge').textContent = `${pNeutral}% (${nNeutral} docs)`;
+
+    const preview = document.getElementById('genSummaryPreview');
+    if (preview) {
+      preview.innerHTML = `
+        <div style="font-weight: 600; color: #f1f5f9; margin-bottom: 4px;">Resumo da Coleção Gerada:</div>
+        <div style="display: flex; flex-direction: column; gap: 3px;">
+          <div>🟢 <strong>${nMulti} docs (${safeMulti}%)</strong> com múltiplos termos de <em>q</em> (alta relevância probabilística)</div>
+          <div>🟡 <strong>${nSingle} docs (${pSingle}%)</strong> com exatamente 1 termo de <em>q</em> (relevância intermediária)</div>
+          <div>⚪ <strong>${nNeutral} docs (${pNeutral}%)</strong> neutros sem termos da busca (escore zero)</div>
+        </div>
+      `;
+    }
+  }
+
+  function executeModalGeneration() {
+    const n = parseInt(document.getElementById('genNRange').value, 10) || 100;
+    const pSingle = parseInt(document.getElementById('genSingleRange').value, 10) || 10;
+    const pMulti = parseInt(document.getElementById('genMultiRange').value, 10) || 5;
+    const vocab = document.getElementById('genVocabSelect').value;
+    generateSyntheticCorpus(n, pSingle, pMulti, vocab === 'words');
+    closeGeneratorModal();
+  }
+
+  // -------------------------------------------------------------------------
+  // 3. ENTRADA E LISTAGEM DE DOCUMENTOS
+  // -------------------------------------------------------------------------
+  let docFilterTerm = "";
+
+  function filterDocInputs(term) {
+    docFilterTerm = term.trim().toLowerCase();
+    renderDocInputs();
+  }
+
+  function renderDocInputs() {
+    const container = document.getElementById('docListContainer');
+    if (!container) return;
+    container.innerHTML = '';
+    
+    const visibleDocs = corpus.filter(doc => {
+      if (!docFilterTerm) return true;
+      return doc.id.toLowerCase().includes(docFilterTerm) || doc.text.toLowerCase().includes(docFilterTerm);
+    });
+
+    const isLarge = visibleDocs.length > 25;
+    const displayList = isLarge ? visibleDocs.slice(0, 25) : visibleDocs;
+
+    displayList.forEach((doc) => {
+      const actualIdx = corpus.findIndex(d => d.id === doc.id);
+      const row = document.createElement('div');
+      row.className = 'doc-item';
+      row.innerHTML = `
+        <span class="doc-badge">${doc.id}</span>
+        <input type="text" class="sim-input" value="${doc.text}" oninput="updateDocText(${actualIdx}, this.value)" style="font-size: 0.8rem; padding: 4px 8px;">
+        <button class="doc-remove-btn" title="Remover Documento" onclick="removeDoc(${actualIdx})">✕</button>
+      `;
+      container.appendChild(row);
+    });
+
+    if (isLarge) {
+      const moreInfo = document.createElement('div');
+      moreInfo.style.cssText = "font-size: 0.74rem; color: #8b9bb4; text-align: center; padding: 6px; background: rgba(255,255,255,0.02); border-radius: 4px; margin-top: 4px;";
+      moreInfo.textContent = `Mostrando primeiros 25 de ${visibleDocs.length} documentos. Use o filtro acima para buscar específicos.`;
+      container.appendChild(moreInfo);
+    }
+
+    const badge = document.getElementById('docCountBadge');
+    if (badge) {
+      badge.textContent = `N = ${corpus.length}`;
+    }
+  }
+
+  function updateDocText(index, newText) {
+    if (corpus[index]) {
+      corpus[index].text = newText;
+    }
+  }
+
+  function addNewDocInput() {
+    const nextId = `d${corpus.length + 1}`;
+    corpus.push({ id: nextId, text: "novo documento", relevant: false });
+    renderDocInputs();
+    runSearch();
+  }
+
+  function removeDoc(index) {
+    if (corpus.length <= 1) {
+      alert("A coleção precisa de pelo menos 1 documento.");
+      return;
+    }
+    corpus.splice(index, 1);
+    corpus.forEach((d, i) => d.id = `d${i + 1}`);
+    renderDocInputs();
+    runSearch();
+  }
+
+  function loadPreset(name) {
+    if (name === 'clear') {
+      corpus = [
+        { id: "d1", text: "", relevant: false },
+        { id: "d2", text: "", relevant: false }
+      ];
+      document.getElementById('queryInput').value = "";
+    } else if (presets[name]) {
+      corpus = JSON.parse(JSON.stringify(presets[name]));
+      if (name === 'todo') {
+        document.getElementById('queryInput').value = "to do";
+        document.getElementById('formulaSelect').value = "eq218";
+      }
+    }
+    docFilterTerm = "";
+    const filterInput = document.getElementById('docListSearch');
+    if (filterInput) filterInput.value = "";
+    updateModelRecommendation();
+    renderDocInputs();
+    runSearch();
+  }
+
+  function onQueryInputChange() {
+    runSearch();
+  }
+
+  function tokenize(str) {
+    return str
+      .toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9\s]/g, " ")
+      .split(/\s+/)
+      .filter(t => t.length > 0);
+  }
+
+  // -------------------------------------------------------------------------
+  // 4. ESTADO DE VISUALIZAÇÃO DA COMPOSIÇÃO DA SIMILARIDADE
+  // -------------------------------------------------------------------------
+  let simFilterMode = 'top'; // 'top', 'matched', 'all'
+  let simSearchTerm = '';
+  let simExpandedAll = false;
+
+  function setSimFilter(mode) {
+    simFilterMode = mode;
+    renderSimilaritySection();
+  }
+
+  function onSimSearch(val) {
+    simSearchTerm = val.trim().toLowerCase();
+    renderSimilaritySection();
+  }
+
+  function toggleExpandAllSim() {
+    simExpandedAll = !simExpandedAll;
+    renderSimilaritySection();
+  }
+
+  // Armazena contexto do último cálculo para permitir re-renderização instantânea dos filtros
+  let lastSearchContext = null;
+
+  function renderSimilaritySection() {
+    if (!lastSearchContext) return;
+    const { scoredDocs, termWeights, N, multiMatchCount, singleMatchCount, zeroMatchCount } = lastSearchContext;
+    const container = document.getElementById('simDynamicDocList');
+    if (!container) return;
+
+    // Atualizar botões de filtro
+    ['top', 'matched', 'all'].forEach(m => {
+      const btn = document.getElementById(`simFilterBtn_${m}`);
+      if (btn) btn.classList.toggle('active', simFilterMode === m);
+    });
+
+    let filtered = scoredDocs;
+    if (simFilterMode === 'top') {
+      filtered = scoredDocs.slice(0, Math.min(10, scoredDocs.length));
+    } else if (simFilterMode === 'matched') {
+      filtered = scoredDocs.filter(d => d.matchedTerms.length > 0);
+    }
+
+    if (simSearchTerm) {
+      filtered = filtered.filter(d => 
+        d.id.toLowerCase().includes(simSearchTerm) || 
+        d.text.toLowerCase().includes(simSearchTerm) ||
+        d.matchedTerms.some(t => t.toLowerCase().includes(simSearchTerm))
+      );
+    }
+
+    const limit = (simFilterMode === 'all' && !simExpandedAll && filtered.length > 20) ? 20 : filtered.length;
+    const displayDocs = filtered.slice(0, limit);
+
+    let docHtml = '';
+    displayDocs.forEach((doc, rankIdx) => {
+      const isMulti = doc.matchedTerms.length > 1;
+      const isSingle = doc.matchedTerms.length === 1;
+      const isZero = doc.matchedTerms.length === 0;
+      
+      const cardClass = isMulti ? 'multi-match' : (isSingle ? 'has-match' : 'zero-match');
+      const scoreColor = doc.score > 0 ? '#10b981' : (doc.score < 0 ? '#f43f5e' : '#94a3b8');
+      const scoreBg = doc.score > 0 ? 'rgba(16, 185, 129, 0.12)' : (doc.score < 0 ? 'rgba(244, 63, 94, 0.12)' : 'rgba(255, 255, 255, 0.05)');
+
+      let equationContent = '';
+      let explanationContent = '';
+      let contribBarContent = '';
+
+      if (isZero) {
+        equationContent = `
+          <span style="color: #64748b; font-size: 0.8rem;">Nenhum termo da busca presente no texto</span>
+          <span class="math-symbol">→</span>
+          <span class="math-total" style="background: ${scoreBg}; color: ${scoreColor}; font-size: 0.85rem;">escore = 0,000</span>
+        `;
+        explanationContent = `Documento neutro: não contém termos de <em>q</em>. A soma vazia resulta em escore nulo.`;
+      } else {
+        const parts = doc.matchedTerms.map(t => {
+          const w = termWeights[t];
+          const sign = w >= 0 ? '+' : '';
+          return `<span class="term-pill">${t}</span> <span class="math-val">${sign}${w.toFixed(3)}</span>`;
+        });
+
+        equationContent = `
+          ${parts.join(' <span class="math-symbol">+</span> ')}
+          <span class="math-symbol">=</span>
+          <span class="math-total" style="background: ${scoreBg}; color: ${scoreColor};">${doc.score.toFixed(3)}</span>
+        `;
+
+        if (isMulti) {
+          const colors = ['#38bdf8', '#10b981', '#f59e0b', '#818cf8', '#ec4899'];
+          const totalAbs = doc.matchedTerms.reduce((sum, t) => sum + Math.abs(termWeights[t]), 0) || 1;
+          const segments = doc.matchedTerms.map((t, i) => {
+            const pct = ((Math.abs(termWeights[t]) / totalAbs) * 100).toFixed(0);
+            return `<div class="contrib-seg" style="width: ${pct}%; background: ${colors[i % colors.length]};" title="${t}: ${pct}% da soma"></div>`;
+          }).join('');
+          contribBarContent = `<div class="contrib-bar">${segments}</div>`;
+          explanationContent = `Coocorrência de <strong>${doc.matchedTerms.length} termos</strong> (${doc.matchedTerms.join(', ')}): a soma direta dos seus pesos probabilísticos coloca este documento em destaque.`;
+        } else {
+          explanationContent = `Contém unicamente o termo <strong>"${doc.matchedTerms[0]}"</strong>: herda exatamente o peso \(w("${doc.matchedTerms[0]}") = ${doc.score.toFixed(3)}\).`;
+        }
+      }
+
+      const matchBadge = isMulti 
+        ? `<span style="color: #10b981; font-size: 0.74rem; font-weight: 600; background: rgba(16, 185, 129, 0.1); padding: 1px 6px; border-radius: 4px;">${doc.matchedTerms.length} termos casados</span>`
+        : (isSingle 
+            ? `<span style="color: #38bdf8; font-size: 0.74rem; font-weight: 600; background: rgba(56, 189, 248, 0.1); padding: 1px 6px; border-radius: 4px;">1 termo casado</span>`
+            : `<span style="color: #64748b; font-size: 0.74rem; background: rgba(255, 255, 255, 0.04); padding: 1px 6px; border-radius: 4px;">0 termos casados</span>`);
+
+      docHtml += `
+        <div class="sim-doc-card ${cardClass}">
+          <div class="sim-doc-card-header">
+            <div class="sim-doc-title-group">
+              <span class="sim-doc-pos">#${rankIdx + 1}</span>
+              <span class="sim-doc-id">${doc.id}</span>
+              <span style="font-size: 0.8rem; color: #cbd5e1; max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">"${doc.text}"</span>
+              ${matchBadge}
+            </div>
+            <div class="sim-doc-score" style="color: ${scoreColor};">
+              ${doc.score.toFixed(3)}
+            </div>
+          </div>
+
+          <div class="sim-math-equation">
+            ${equationContent}
+          </div>
+          ${contribBarContent}
+          <div class="sim-doc-explanation">
+            ${explanationContent}
+          </div>
+        </div>
+      `;
+    });
+
+    if (filtered.length === 0) {
+      docHtml = `
+        <div style="text-align: center; color: #8b9bb4; padding: 24px;">
+          Nenhum documento encontrado para o filtro selecionado.
+        </div>
+      `;
+    } else if (simFilterMode === 'all' && !simExpandedAll && filtered.length > 20) {
+      docHtml += `
+        <div style="text-align: center; padding: 10px;">
+          <button class="preset-btn" onclick="toggleExpandAllSim()" style="background: rgba(56, 189, 248, 0.12); color: #38bdf8; border-color: rgba(56, 189, 248, 0.3); padding: 6px 14px;">
+            👁️ Mostrar todos os ${filtered.length} documentos da base
+          </button>
+        </div>
+      `;
+    } else if (simExpandedAll && filtered.length > 20) {
+      docHtml += `
+        <div style="text-align: center; padding: 10px;">
+          <button class="preset-btn" onclick="toggleExpandAllSim()" style="color: #8b9bb4; padding: 5px 12px;">
+            ▲ Recolher para 20 documentos
+          </button>
+        </div>
+      `;
+    }
+
+    container.innerHTML = docHtml;
+  }
+
+  // -------------------------------------------------------------------------
+  // 5. MOTOR PRINCIPAL DE PROCESSAMENTO E RANKING
+  // -------------------------------------------------------------------------
+  function runSearch() {
+    const queryRaw = document.getElementById('queryInput').value;
+    const queryTokens = Array.from(new Set(tokenize(queryRaw)));
+    const formulaType = document.getElementById('formulaSelect').value;
+    const resultsArea = document.getElementById('simResultsArea');
+
+    if (queryTokens.length === 0) {
+      resultsArea.innerHTML = `
+        <div style="text-align: center; color: #8b9bb4; padding: 40px;">
+          <p style="font-size: 1.05rem;">Digite termos na consulta e clique em <strong>Executar Busca</strong>.</p>
+        </div>
+      `;
+      return;
+    }
+
+    const N = corpus.length;
+    const R = corpus.filter(d => d.relevant).length;
+
+    const tokenizedDocs = corpus.map(doc => ({
+      ...doc,
+      tokens: new Set(tokenize(doc.text))
+    }));
+
+    const termStats = {};
+    queryTokens.forEach(term => {
+      let ni = 0;
+      let ri = 0;
+      tokenizedDocs.forEach(doc => {
+        if (doc.tokens.has(term)) {
+          ni++;
+          if (doc.relevant) ri++;
+        }
+      });
+      termStats[term] = { ni, ri };
+    });
+
+    const termWeights = {};
+    const termCalcs = {};
+
+    queryTokens.forEach(term => {
+      const { ni, ri } = termStats[term];
+      let w = 0;
+      let detail = "";
+
+      if (formulaType === 'eq217') {
+        const num = N - ni + 0.5;
+        const den = ni + 0.5;
+        w = Math.log2(num / den);
+        detail = `\\log_2 \\left( \\frac{${N} - ${ni} + 0,5}{${ni} + 0,5} \\right) = \\log_2 \\left( \\frac{${num.toFixed(1)}}{${den.toFixed(1)}} \\right) = \\mathbf{${w.toFixed(3)}}`;
+      } 
+      else if (formulaType === 'eq218') {
+        const num = N + 0.5;
+        const den = ni + 0.5;
+        w = Math.log2(num / den);
+        detail = `\\log_2 \\left( \\frac{${N} + 0,5}{${ni} + 0,5} \\right) = \\log_2 \\left( \\frac{${num.toFixed(1)}}{${den.toFixed(1)}} \\right) = \\mathbf{${w.toFixed(3)}}`;
+      } 
+      else if (formulaType === 'eq219') {
+        if (ni === 0 || ni === N) {
+          w = 0;
+          detail = `Termo ausente ou universal`;
+        } else {
+          const num = N - ni;
+          const den = ni;
+          w = Math.log2(num / den);
+          detail = `\\log_2 \\left( \\frac{${N} - ${ni}}{${ni}} \\right) = \\mathbf{${w.toFixed(3)}}`;
+        }
+      } 
+      else if (formulaType === 'eqRSJ') {
+        const t1 = ri + 0.5;
+        const t2 = (N - ni - R + ri) + 0.5;
+        const t3 = (R - ri) + 0.5;
+        const t4 = (ni - ri) + 0.5;
+        const num = t1 * t2;
+        const den = t3 * t4;
+        w = Math.log2(num / den);
+        detail = `\\log_2 \\left( \\frac{(${ri}+0,5)(${N}-${ni}-${R}+${ri}+0,5)}{(${R}-${ri}+0,5)(${ni}-${ri}+0,5)} \\right) = \\log_2 \\left( \\frac{${num.toFixed(2)}}{${den.toFixed(2)}} \\right) = \\mathbf{${w.toFixed(3)}}`;
+      }
+
+      termWeights[term] = w;
+      termCalcs[term] = detail;
+    });
+
+    const scoredDocs = tokenizedDocs.map(doc => {
+      let score = 0;
+      const matchedTerms = [];
+      const termsDetails = [];
+
+      queryTokens.forEach(term => {
+        if (doc.tokens.has(term)) {
+          const w = termWeights[term];
+          score += w;
+          matchedTerms.push(term);
+          termsDetails.push(`w(${term}) = ${w.toFixed(3)}`);
+        }
+      });
+
+      return {
+        id: doc.id,
+        text: doc.text,
+        relevant: doc.relevant,
+        score: score,
+        matchedTerms,
+        termsDetails
+      };
+    });
+
+    scoredDocs.sort((a, b) => b.score - a.score);
+
+    const multiMatchCount = scoredDocs.filter(d => d.matchedTerms.length > 1).length;
+    const singleMatchCount = scoredDocs.filter(d => d.matchedTerms.length === 1).length;
+    const zeroMatchCount = scoredDocs.filter(d => d.matchedTerms.length === 0).length;
+
+    lastSearchContext = {
+      scoredDocs,
+      termWeights,
+      N,
+      multiMatchCount,
+      singleMatchCount,
+      zeroMatchCount
+    };
+
+    let formulaNameTitle = "";
+    if (formulaType === 'eq218') formulaNameTitle = "Equação 2.18 (Corrigida sem pesos negativos - Tabela 2.11)";
+    if (formulaType === 'eq217') formulaNameTitle = "Equação 2.17 (Bootstrap clássico com -n_i - Tabela 2.10)";
+    if (formulaType === 'eqRSJ') formulaNameTitle = "Equação Robertson-Sparck Jones (+0,5 com Feedback R)";
+    if (formulaType === 'eq219') formulaNameTitle = "Equação 2.19 (Croft & Harper)";
+
+    let html = `
+      <!-- ETAPA 1: RANKING FINAL -->
+      <div class="step-card" style="border-color: rgba(255, 255, 255, 0.1);">
+        <div class="step-header">
+          <div class="step-title">
+            <span>Ranking Final dos Documentos</span>
+          </div>
+          <span style="font-size: 0.78rem; color: #718096; font-family: 'JetBrains Mono', monospace;">
+            Total: ${scoredDocs.length} docs | Relevantes marcados (R) = ${R}
+          </span>
+        </div>
+
+        <div style="max-height: 260px; overflow-y: auto; border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 6px;">
+          <table class="rank-table">
+            <thead>
+              <tr>
+                <th style="width: 45px;">Pos.</th>
+                <th style="width: 65px;">Doc</th>
+                <th style="width: 90px;">Escore</th>
+                <th>Texto do Documento</th>
+                <th style="width: 130px;">Termos Casados</th>
+                <th style="width: 120px; text-align: center;">Relevante?</th>
+              </tr>
+            </thead>
+            <tbody>
+    `;
+
+    scoredDocs.forEach((doc, rankIdx) => {
+      const posClass = rankIdx === 0 ? 'rank-pos-1' : '';
+      const scoreColor = doc.score > 0 ? '#10b981' : (doc.score < 0 ? '#f43f5e' : '#94a3b8');
+
+      html += `
+        <tr>
+          <td class="rank-pos ${posClass}">#${rankIdx + 1}</td>
+          <td><strong style="color: #38bdf8;">${doc.id}</strong></td>
+          <td class="rank-score" style="color: ${scoreColor};">${doc.score.toFixed(3)}</td>
+          <td style="font-size: 0.85rem; color: #e2e8f0;">"${doc.text}"</td>
+          <td style="font-size: 0.8rem; color: #8b9bb4;">
+            ${doc.matchedTerms.length > 0 ? doc.matchedTerms.map(t => `<code style="padding: 1px 4px;">${t}</code>`).join(' ') : '<em style="color:#5a6880;">Nenhum</em>'}
+          </td>
+          <td style="text-align: center;">
+            <label class="relevance-toggle-label">
+              <input type="checkbox" ${doc.relevant ? 'checked' : ''} onchange="toggleDocRelevance('${doc.id}')">
+              <span>${doc.relevant ? '<strong style="color:#10b981;">Sim (R)</strong>' : 'Não'}</span>
+            </label>
+          </td>
+        </tr>
+      `;
+    });
+
+    html += `
+            </tbody>
+          </table>
+        </div>
+
+        <div class="formula-explanation">
+          <strong>Feedback de Relevância:</strong> Marque documentos como <strong>Sim (R)</strong> no ranking para recalibrar os valores de \(r_i\) na fórmula de Robertson-Sparck Jones e ver a ordenação bayesiana se atualizar.
+        </div>
+      </div>
+
+      <!-- ETAPA 2: TABELA DE CONTINGÊNCIA & INCIDÊNCIA -->
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-title">
+            <span>Passo 1: Tabela de Contingência dos Termos (Tabela 2.9)</span>
+          </div>
+          <span style="font-size: 0.78rem; color: #718096;">Consulta: [${queryTokens.join(', ')}]</span>
+        </div>
+
+        <table style="margin: 6px 0; font-size: 0.86rem;">
+          <thead>
+            <tr>
+              <th>Termo (\(k_i\))</th>
+              <th>Freq. Base (\(n_i\))</th>
+              <th>Não Contêm (\(N - n_i\))</th>
+              <th>Relevantes com termo (\(r_i\))</th>
+              <th>Relevantes sem termo (\(R - r_i\))</th>
+              <th>Proporção na Base (\(n_i / N\))</th>
+            </tr>
+          </thead>
+          <tbody>
+    `;
+
+    queryTokens.forEach(term => {
+      const { ni, ri } = termStats[term];
+      const prop = ((ni / N) * 100).toFixed(0);
+      const isFrequent = ni > N / 2;
+
+      html += `
+        <tr>
+          <td><strong style="color: #f1f5f9;">"${term}"</strong></td>
+          <td><strong>${ni}</strong></td>
+          <td>${N - ni}</td>
+          <td>${ri}</td>
+          <td>${R - ri}</td>
+          <td>${prop}% ${isFrequent ? '<span style="color:#f59e0b; font-size:0.75rem;">(> 50%)</span>' : ''}</td>
+        </tr>
+      `;
+    });
+
+    html += `
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ETAPA 3: CÁLCULO DOS PESOS w_i COM CONTAS ABERTAS -->
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-title">
+            <span>Passo 2: Dedução dos Pesos dos Termos (\(w_i\)) — Contas Abertas</span>
+          </div>
+          <span style="font-size: 0.78rem; color: #38bdf8; font-weight: 500;">${formulaNameTitle}</span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 7px; margin-top: 6px;">
+    `;
+
+    queryTokens.forEach(term => {
+      const w = termWeights[term];
+      const calcStr = termCalcs[term];
+      const isNegative = w < 0;
+
+      html += `
+        <div style="background: rgba(255, 255, 255, 0.02); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.04); display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <span style="color: #94a3b8; font-weight: 500; font-size: 0.92rem;">w("${term}")</span>:
+            <span style="font-size: 0.92rem; margin-left: 8px;">$$${calcStr}$$</span>
+          </div>
+          <div>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; color: ${isNegative ? '#f43f5e' : '#10b981'}; font-weight: 600;">
+              ${w.toFixed(3)} ${isNegative ? '(Peso Negativo)' : ''}
+            </span>
+          </div>
+        </div>
+      `;
+    });
+
+    html += `
+        </div>
+
+        ${formulaType === 'eq217' ? `
+          <div class="formula-explanation" style="border-left-color: #f43f5e; margin-top: 10px;">
+            <strong>Anomalia da Eq. 2.17 (Tabela 2.10):</strong> Termos frequentes (\(n_i > N/2\)) geram pesos <strong>negativos</strong>. O documento que contém mais termos pode ser penalizado. Alterne para a <strong>Equação 2.18</strong> para visualizar a correção.
+          </div>
+        ` : ''}
+
+        ${formulaType === 'eq218' ? `
+          <div class="formula-explanation" style="border-left-color: #10b981; margin-top: 10px;">
+            <strong>Equação 2.18 (Tabela 2.11):</strong> O fator \(n_i\) foi eliminado do numerador. Termos com \(n_i = N\) geram peso zero e não existem mais pesos negativos.
+          </div>
+        ` : ''}
+      </div>
+
+      <!-- ETAPA 4: COMPOSIÇÃO DA SIMILARIDADE (Reformulada: Legível e Compreensível) -->
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            <span>Passo 3: Composição da Similaridade — Decomposição Termo a Termo</span>
+          </div>
+          <span style="font-size: 0.78rem; color: #38bdf8; font-family: 'JetBrains Mono', monospace;">
+            sim(d_j, q) = ∑ w_i
+          </span>
+        </div>
+
+        <div class="sim-comp-box">
+          <!-- Card de Princípio Formal Didático -->
+          <div class="sim-principle-card">
+            <div style="font-weight: 600; color: #f8fafc; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
+              <span>Regra de Cálculo Formal:</span>
+              <span style="font-family: 'JetBrains Mono', monospace; color: #38bdf8; font-size: 0.9rem;">$$\\text{sim}(d_j, q) = \\sum_{k_i \\in q \\wedge k_i \\in d_j} w_i$$</span>
+            </div>
+            <div>
+              O escore de cada documento é <strong>a soma estrita dos pesos \(w_i\)</strong> dos termos da consulta que nele coocorrem. Termos ausentes têm peso zero.
+            </div>
+            <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+              <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 600;">Pesos vigentes nesta rodada:</span>
+              ${queryTokens.map(t => `<span class="term-pill">${t} = ${termWeights[t] >= 0 ? '+' : ''}${termWeights[t].toFixed(3)}</span>`).join(' ')}
+            </div>
+          </div>
+
+          <!-- Estatísticas da Coleção -->
+          <div class="sim-stats-grid">
+            <div class="sim-stat-pill" style="border-left: 3px solid #10b981;">
+              <span class="sim-stat-pill-label">Alta Relevância (&gt;1 termo)</span>
+              <span class="sim-stat-pill-num" style="color: #10b981;">${multiMatchCount} <span style="font-size: 0.75rem; color: #8b9bb4; font-weight: 400;">docs (${((multiMatchCount / N) * 100).toFixed(0)}%)</span></span>
+            </div>
+            <div class="sim-stat-pill" style="border-left: 3px solid #38bdf8;">
+              <span class="sim-stat-pill-label">Relevância Parcial (1 termo)</span>
+              <span class="sim-stat-pill-num" style="color: #38bdf8;">${singleMatchCount} <span style="font-size: 0.75rem; color: #8b9bb4; font-weight: 400;">docs (${((singleMatchCount / N) * 100).toFixed(0)}%)</span></span>
+            </div>
+            <div class="sim-stat-pill" style="border-left: 3px solid #475569;">
+              <span class="sim-stat-pill-label">Neutros (0 termos)</span>
+              <span class="sim-stat-pill-num" style="color: #94a3b8;">${zeroMatchCount} <span style="font-size: 0.75rem; color: #64748b; font-weight: 400;">docs (${((zeroMatchCount / N) * 100).toFixed(0)}%)</span></span>
+            </div>
+          </div>
+
+          <!-- Barra de Filtros e Busca de Documentos na Composição -->
+          <div class="sim-filter-bar">
+            <div class="sim-filter-tabs">
+              <button class="sim-filter-btn ${simFilterMode === 'top' ? 'active' : ''}" id="simFilterBtn_top" onclick="setSimFilter('top')">Top 10 Documentos</button>
+              <button class="sim-filter-btn ${simFilterMode === 'matched' ? 'active' : ''}" id="simFilterBtn_matched" onclick="setSimFilter('matched')">Com Pontuação (${multiMatchCount + singleMatchCount})</button>
+              <button class="sim-filter-btn ${simFilterMode === 'all' ? 'active' : ''}" id="simFilterBtn_all" onclick="setSimFilter('all')">Ver Todos (${N})</button>
+            </div>
+            <div>
+              <input type="text" class="sim-input" placeholder="🔍 Localizar doc (ex: d1)..." oninput="onSimSearch(this.value)" style="font-size: 0.76rem; padding: 4px 8px; width: 170px;">
+            </div>
+          </div>
+
+          <!-- Container Dinâmico com Cards Legíveis -->
+          <div class="sim-doc-grid" id="simDynamicDocList">
+            <!-- Renderizado dinamicamente via renderSimilaritySection() -->
+          </div>
+
+        </div>
+      </div>
+    `;
+
+    resultsArea.innerHTML = html;
+
+    renderSimilaritySection();
+
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      window.MathJax.typesetPromise([resultsArea]).catch(() => {});
+    }
+  }
+
+  function toggleDocRelevance(docId) {
+    const doc = corpus.find(d => d.id === docId);
+    if (doc) {
+      doc.relevant = !doc.relevant;
+      const formulaSelect = document.getElementById('formulaSelect');
+      if (doc.relevant && formulaSelect.value === 'eq218') {
+        formulaSelect.value = 'eqRSJ';
+      }
+      updateModelRecommendation();
+      runSearch();
+    }
+  }
+
+  updateModelRecommendation();
+  renderDocInputs();
+  updateSlide(0);
+
+  // Inicialização
+  updateSlide(0);
+</script>
+
+</body>
+</html>
