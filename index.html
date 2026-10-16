@@ -450,8 +450,8 @@
        ============================================================ */
     .sim-container {
       display: grid;
-      grid-template-columns: 350px 1fr;
-      gap: 18px;
+      grid-template-columns: 360px 1fr;
+      gap: 16px;
       height: 100%;
       overflow: hidden;
       text-align: left;
@@ -677,6 +677,410 @@
       padding: 8px 12px;
       border-radius: 5px;
       border-left: 2px solid #38bdf8;
+    }
+
+    /* ============================================================
+       CARD DE INDICAÇÃO DO MODELO (Para que serve cada fórmula)
+       ============================================================ */
+    .model-rec-card {
+      background: rgba(14, 165, 233, 0.05);
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      border-radius: 8px;
+      padding: 11px 13px;
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      transition: all 0.25s ease;
+      font-size: 0.81rem;
+    }
+    .model-rec-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .model-rec-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .model-rec-tag.cold-start {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+    .model-rec-tag.historic {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.35);
+    }
+    .model-rec-tag.feedback {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+    }
+    .model-rec-tag.automatic {
+      background: rgba(168, 85, 247, 0.15);
+      color: #c084fc;
+      border: 1px solid rgba(168, 85, 247, 0.35);
+    }
+    .model-rec-formula {
+      font-family: 'JetBrains Mono', monospace;
+      color: #94a3b8;
+      font-size: 0.72rem;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .model-rec-desc {
+      color: #e2e8f0;
+      line-height: 1.48;
+      font-size: 0.82rem;
+    }
+    .model-rec-details {
+      color: #94a3b8;
+      line-height: 1.45;
+      font-size: 0.76rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      padding-top: 6px;
+    }
+
+    /* ============================================================
+       MODAL E CONTROLES DO GERADOR SINTÉTICO DE DOCUMENTOS
+       ============================================================ */
+    .btn-generator-highlight {
+      background: rgba(14, 165, 233, 0.12) !important;
+      border-color: rgba(56, 189, 248, 0.4) !important;
+      color: #38bdf8 !important;
+      font-weight: 600;
+    }
+    .btn-generator-highlight:hover {
+      background: rgba(14, 165, 233, 0.25) !important;
+      border-color: #38bdf8 !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+    }
+
+    .generator-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(7, 10, 16, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      z-index: 250;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .generator-modal.open {
+      display: flex;
+    }
+    .generator-modal-content {
+      background: #111622;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      width: 92%;
+      max-width: 580px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 26px 30px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-align: left;
+    }
+    .generator-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 12px;
+    }
+    .generator-modal-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .generator-modal-subtitle {
+      font-size: 0.82rem;
+      color: #8b9bb4;
+      margin-top: 4px;
+      line-height: 1.45;
+    }
+
+    .gen-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .gen-row-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.84rem;
+      color: #cbd5e1;
+      font-weight: 500;
+    }
+    .gen-badge-val {
+      font-family: 'JetBrains Mono', monospace;
+      color: #38bdf8;
+      font-weight: 600;
+      font-size: 0.82rem;
+      background: rgba(56, 189, 248, 0.1);
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+    .gen-slider {
+      width: 100%;
+      accent-color: #0284c7;
+      cursor: pointer;
+      height: 6px;
+      background: #1f2738;
+      border-radius: 3px;
+    }
+    .gen-preview-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      color: #cbd5e1;
+    }
+    .gen-quick-sizes {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .gen-size-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #94a3b8;
+      padding: 4px 10px;
+      border-radius: 5px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      transition: all 0.15s;
+    }
+    .gen-size-btn:hover, .gen-size-btn.active {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border-color: #38bdf8;
+    }
+
+    /* ============================================================
+       COMPOSIÇÃO DA SIMILARIDADE (Design Limpo, Estruturado e Legível)
+       ============================================================ */
+    .sim-comp-box {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .sim-principle-card {
+      background: rgba(56, 189, 248, 0.04);
+      border: 1px solid rgba(56, 189, 248, 0.16);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      line-height: 1.55;
+      color: #cbd5e1;
+    }
+    .sim-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .sim-stat-pill {
+      background: #080c14;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 7px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .sim-stat-pill-label {
+      font-size: 0.7rem;
+      color: #718096;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .sim-stat-pill-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+
+    .sim-filter-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 2px;
+    }
+    .sim-filter-tabs {
+      display: flex;
+      gap: 6px;
+    }
+    .sim-filter-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #94a3b8;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: all 0.15s;
+    }
+    .sim-filter-btn:hover, .sim-filter-btn.active {
+      background: rgba(56, 189, 248, 0.14);
+      border-color: #38bdf8;
+      color: #38bdf8;
+    }
+
+    .sim-doc-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 420px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .sim-doc-grid::-webkit-scrollbar {
+      width: 4px;
+    }
+    .sim-doc-grid::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 3px;
+    }
+
+    .sim-doc-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .sim-doc-card:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+    .sim-doc-card.has-match {
+      border-left: 3px solid #38bdf8;
+    }
+    .sim-doc-card.multi-match {
+      border-left: 3px solid #10b981;
+    }
+    .sim-doc-card.zero-match {
+      border-left: 3px solid #334155;
+      opacity: 0.85;
+    }
+
+    .sim-doc-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .sim-doc-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sim-doc-pos {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: #64748b;
+      font-weight: 600;
+    }
+    .sim-doc-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: #38bdf8;
+      font-size: 0.88rem;
+    }
+    .sim-doc-score {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.98rem;
+      font-weight: 700;
+    }
+
+    .sim-math-equation {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      background: rgba(0, 0, 0, 0.28);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .term-pill {
+      background: rgba(56, 189, 248, 0.12);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .math-symbol {
+      color: #64748b;
+      font-weight: 600;
+    }
+    .math-val {
+      color: #f1f5f9;
+      font-weight: 600;
+    }
+    .math-total {
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .contrib-bar {
+      height: 4px;
+      border-radius: 2px;
+      overflow: hidden;
+      display: flex;
+      background: rgba(255, 255, 255, 0.05);
+      margin-top: 3px;
+    }
+    .contrib-seg {
+      height: 100%;
+      transition: width 0.3s;
+    }
+
+    .sim-doc-explanation {
+      font-size: 0.78rem;
+      color: #8b9bb4;
+      line-height: 1.45;
     }
 
     /* Modal Visão Geral de Todos os Slides */
@@ -1387,11 +1791,13 @@
         
         <div>
           <div class="sim-label" style="margin-bottom: 6px;">
-            <span>Coleção do Livro</span>
+            <span>Coleções & Gerador Sintético</span>
           </div>
           <div class="sim-presets">
             <button class="preset-btn" onclick="loadPreset('todo')">Tabelas 2.10 e 2.11 ("to do")</button>
-            <button class="preset-btn" onclick="loadPreset('clear')">Limpar Coleção</button>
+            <button class="preset-btn btn-generator-highlight" onclick="quickGenerate100Docs()" title="Gerar automaticamente 100 docs baseado na consulta: 10% 1 termo, 5% múltiplos termos">⚡ Gerar 100 Docs (10% / 5%)</button>
+            <button class="preset-btn" onclick="openGeneratorModal()" title="Configurar proporções e tamanho da coleção sintética">⚙️ Configurar Gerador...</button>
+            <button class="preset-btn" onclick="loadPreset('clear')">Limpar</button>
           </div>
         </div>
 
@@ -1400,29 +1806,37 @@
             <span>Coleção de Documentos (\(N\))</span>
             <span id="docCountBadge" style="color: #38bdf8; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;">N = 4</span>
           </div>
-          <div id="docListContainer" style="max-height: 180px; overflow-y: auto; padding-right: 4px;">
+          <input type="text" id="docListSearch" class="sim-input" placeholder="🔍 Filtrar lista de docs por texto ou ID..." oninput="filterDocInputs(this.value)" style="margin-bottom: 6px; font-size: 0.76rem; padding: 5px 9px;">
+          <div id="docListContainer" style="max-height: 170px; overflow-y: auto; padding-right: 4px;">
             <!-- Documentos gerados via JS -->
           </div>
-          <button class="btn-add-doc" onclick="addNewDocInput()">+ Adicionar Documento</button>
+          <div style="display: flex; gap: 6px; margin-top: 6px;">
+            <button class="btn-add-doc" onclick="addNewDocInput()">+ Adicionar Documento</button>
+          </div>
         </div>
 
         <div>
           <div class="sim-label" style="margin-bottom: 6px;">
             <span>Consulta do Usuário (\(q\))</span>
           </div>
-          <input type="text" id="queryInput" class="sim-input" value="to do" placeholder="Ex: to do">
+          <input type="text" id="queryInput" class="sim-input" value="to do" placeholder="Ex: to do" oninput="onQueryInputChange()">
         </div>
 
         <div>
           <div class="sim-label" style="margin-bottom: 6px;">
             <span>Fórmula Probabilística</span>
           </div>
-          <select id="formulaSelect" class="sim-select" onchange="runSearch()">
+          <select id="formulaSelect" class="sim-select" onchange="onModelChange()">
             <option value="eq218" selected>Equação 2.18 (Corrigida sem pesos negativos)</option>
             <option value="eq217">Equação 2.17 (Bootstrap com -n_i)</option>
             <option value="eqRSJ">Equação Robertson-Sparck Jones (+0,5 e Feedback R)</option>
             <option value="eq219">Equação 2.19 (Croft & Harper)</option>
           </select>
+          
+          <!-- Box Dinâmico: Para que é indicado cada modelo -->
+          <div id="modelRecommendationBox" class="model-rec-card">
+            <!-- Preenchido dinamicamente via JS -->
+          </div>
         </div>
 
         <button class="btn-calculate" onclick="runSearch()">
@@ -1468,6 +1882,88 @@
   </div>
   <div class="overview-grid" id="overviewGrid">
     <!-- Gerado dinamicamente via script -->
+  </div>
+</div>
+
+<!-- Modal do Gerador Sintético de Documentos -->
+<div class="generator-modal" id="generatorModal">
+  <div class="generator-modal-content">
+    <div class="generator-modal-header">
+      <div>
+        <div class="generator-modal-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <span>Gerador Sintético de Documentos</span>
+        </div>
+        <div class="generator-modal-subtitle">Gere uma base sob medida com base nos termos da consulta para avaliar o comportamento do modelo probabilístico</div>
+      </div>
+      <button class="tool-btn" onclick="closeGeneratorModal()" style="font-size: 1.1rem; color: #cbd5e1;">✕</button>
+    </div>
+
+    <div class="gen-row">
+      <div class="gen-row-header">
+        <span>Termos da Consulta Detectados (\(q\)):</span>
+      </div>
+      <div id="genQueryTermsBadge" style="display: flex; gap: 6px; flex-wrap: wrap;"></div>
+    </div>
+
+    <div class="gen-row">
+      <div class="gen-row-header">
+        <span>Tamanho Total da Coleção (\(N\)):</span>
+        <span id="genNBadge" class="gen-badge-val">100 documentos</span>
+      </div>
+      <div class="gen-quick-sizes">
+        <button class="gen-size-btn" onclick="setGenN(20)">20 docs</button>
+        <button class="gen-size-btn" onclick="setGenN(50)">50 docs</button>
+        <button class="gen-size-btn active" id="btnGenSize100" onclick="setGenN(100)">100 docs</button>
+        <button class="gen-size-btn" onclick="setGenN(200)">200 docs</button>
+      </div>
+      <input type="range" id="genNRange" class="gen-slider" min="10" max="300" step="5" value="100" oninput="updateGenSliders()">
+    </div>
+
+    <div class="gen-row">
+      <div class="gen-row-header">
+        <span>% com 1 Único Termo da Consulta:</span>
+        <span id="genSingleBadge" class="gen-badge-val">10% (10 docs)</span>
+      </div>
+      <input type="range" id="genSingleRange" class="gen-slider" min="0" max="60" step="1" value="10" oninput="updateGenSliders()">
+    </div>
+
+    <div class="gen-row">
+      <div class="gen-row-header">
+        <span>% com Mais de 1 Termo da Consulta (&gt; 1):</span>
+        <span id="genMultiBadge" class="gen-badge-val">5% (5 docs)</span>
+      </div>
+      <input type="range" id="genMultiRange" class="gen-slider" min="0" max="40" step="1" value="5" oninput="updateGenSliders()">
+    </div>
+
+    <div class="gen-row">
+      <div class="gen-row-header">
+        <span>% de Documentos Neutros (sem termos da consulta):</span>
+        <span id="genNeutralBadge" class="gen-badge-val" style="color: #94a3b8; background: rgba(255,255,255,0.06);">85% (85 docs)</span>
+      </div>
+    </div>
+
+    <div class="gen-row">
+      <div class="gen-row-header">
+        <span>Vocabulário de Contexto:</span>
+      </div>
+      <select id="genVocabSelect" class="sim-select" style="font-size: 0.84rem;">
+        <option value="words" selected>Com palavras técnicas de contexto (algoritmo, sistema, dados, rede...)</option>
+        <option value="simple">Apenas termos puros da busca e identificadores mínimos</option>
+      </select>
+    </div>
+
+    <div class="gen-preview-box" id="genSummaryPreview">
+      <!-- Resumo ao vivo -->
+    </div>
+
+    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px;">
+      <button class="preset-btn" onclick="closeGeneratorModal()">Cancelar</button>
+      <button class="btn-calculate" style="margin-top: 0;" onclick="executeModalGeneration()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        <span>Gerar Coleção e Executar</span>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -1685,26 +2181,287 @@
     ]
   };
 
+  const contextWords = [
+    "algoritmo", "busca", "sistema", "informacao", "dados", "indice",
+    "pesquisa", "computador", "rede", "banco", "vetor", "probabilidade",
+    "relevancia", "arquivo", "servidor", "processamento", "analise", "texto",
+    "modelo", "consulta", "bayes", "frequencia", "colecao", "memoria"
+  ];
+
+  // -------------------------------------------------------------------------
+  // 1. INDICAÇÃO / RECOMENDAÇÃO DOS MODELOS (Para que serve cada um)
+  // -------------------------------------------------------------------------
+  const modelRecommendations = {
+    eq218: {
+      tag: "Recomendado: Cold Start",
+      tagClass: "cold-start",
+      formula: "w_i = log2((N + 0,5) / (n_i + 0,5))",
+      title: "Equação 2.18 (Correção da Frequência sem Pesos Negativos)",
+      desc: "<strong>🎯 Indicado para:</strong> Primeira busca do usuário (<strong>Cold Start</strong>) quando ainda não há dados de relevância prévia (\(R = 0\)).",
+      details: "<strong>✨ Por que usar:</strong> Elimina o termo \(-n_i\) do numerador da Eq. 2.17. Garante que palavras frequentes da busca (\(n_i > N/2\)) nunca recebam pesos negativos nem prejudiquem documentos relevantes."
+    },
+    eq217: {
+      tag: "Didático: Modelo Histórico",
+      tagClass: "historic",
+      formula: "w_i = log2((N - n_i + 0,5) / (n_i + 0,5))",
+      title: "Equação 2.17 (Bootstrap Clássico de Robertson & Sparck Jones)",
+      desc: "<strong>🎯 Indicado para:</strong> Fins didáticos e estudo formal da dedução original de 1976 (pág. 52 do livro).",
+      details: "<strong>⚠️ Alerta / Limitação:</strong> Quando um termo ocorre em mais de 50% da base (\(n_i > N/2\)), seu peso torna-se <strong>negativo</strong>, penalizando documentos que contêm mais palavras da busca (ver Tabela 2.10)."
+    },
+    eqRSJ: {
+      tag: "Ideal: Com Feedback de Relevância",
+      tagClass: "feedback",
+      formula: "w_i = log2 [ (r_i+0,5)(N-n_i-R+r_i+0,5) / (R-r_i+0,5)(n_i-r_i+0,5) ]",
+      title: "Equação Robertson-Sparck Jones Completa (Feedback R)",
+      desc: "<strong>🎯 Indicado para:</strong> Refinamento iterativo da busca após o usuário avaliar os primeiros resultados.",
+      details: "<strong>🚀 Como funciona:</strong> Ao marcar documentos como <strong>Sim (R)</strong>, o modelo recalcula as probabilidades bayesianas reais usando \(r_i\) e \(R - r_i\), reposicionando os documentos mais promissores no topo."
+    },
+    eq219: {
+      tag: "Automático: Grandes Coleções",
+      tagClass: "automatic",
+      formula: "w_i = log2((N - n_i) / n_i)",
+      title: "Equação 2.19 (Croft & Harper sem Intervenção Humana)",
+      desc: "<strong>🎯 Indicado para:</strong> Grandes acervos indexados (\(N \\gg n_i\)) com automação total e vocabulário esparso.",
+      details: "<strong>⚠️ Alerta do Livro (pág. 55):</strong> Como não possui o amortecimento \(+0,5\), falha em bases de teste pequenas (\(N \\approx n_i\)), gerando divisões por zero ou escores inconsistentes."
+    }
+  };
+
+  function updateModelRecommendation() {
+    const select = document.getElementById('formulaSelect');
+    if (!select) return;
+    const model = modelRecommendations[select.value];
+    const box = document.getElementById('modelRecommendationBox');
+    if (!box || !model) return;
+
+    box.innerHTML = `
+      <div class="model-rec-header">
+        <span class="model-rec-tag ${model.tagClass}">${model.tag}</span>
+        <span class="model-rec-formula">${model.formula}</span>
+      </div>
+      <div class="model-rec-desc">${model.desc}</div>
+      <div class="model-rec-details">${model.details}</div>
+    `;
+  }
+
+  function onModelChange() {
+    updateModelRecommendation();
+    runSearch();
+  }
+
+  // -------------------------------------------------------------------------
+  // 2. GERADOR SINTÉTICO DE DOCUMENTOS BASEADO NA CONSULTA
+  // -------------------------------------------------------------------------
+  function generateSyntheticCorpus(numDocs, pctSingle, pctMulti, useFillerWords = true) {
+    const queryRaw = document.getElementById('queryInput').value;
+    const queryTokens = Array.from(new Set(tokenize(queryRaw)));
+
+    if (queryTokens.length === 0) {
+      alert("Por favor, digite ao menos um termo na Consulta do Usuário (q) antes de gerar a coleção.");
+      return;
+    }
+
+    const nSingle = Math.round(numDocs * (pctSingle / 100));
+    const nMulti = Math.round(numDocs * (pctMulti / 100));
+    const nNeutral = Math.max(0, numDocs - nSingle - nMulti);
+
+    const newDocs = [];
+    let currentId = 1;
+
+    function getFillers(count) {
+      if (!useFillerWords) return "";
+      const available = contextWords.filter(w => !queryTokens.includes(w));
+      const shuffled = [...available].sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, count).join(" ");
+    }
+
+    // 1. Gerar documentos com MÚLTIPLOS termos da busca (> 1 termo)
+    for (let i = 0; i < nMulti; i++) {
+      let chosenTerms = [];
+      if (queryTokens.length >= 2) {
+        const countToPick = queryTokens.length === 2 ? 2 : Math.min(queryTokens.length, 2 + Math.floor(Math.random() * (queryTokens.length - 1)));
+        const shuffled = [...queryTokens].sort(() => 0.5 - Math.random());
+        chosenTerms = shuffled.slice(0, countToPick);
+      } else {
+        chosenTerms = [queryTokens[0]];
+      }
+      const fillers = getFillers(2 + Math.floor(Math.random() * 3));
+      const text = `${chosenTerms.join(" ")} ${fillers}`.trim();
+      newDocs.push({
+        id: `d${currentId++}`,
+        text: text,
+        relevant: false
+      });
+    }
+
+    // 2. Gerar documentos com EXATAMENTE 1 termo da busca
+    for (let i = 0; i < nSingle; i++) {
+      const term = queryTokens[i % queryTokens.length];
+      const fillers = getFillers(2 + Math.floor(Math.random() * 3));
+      const text = `${term} ${fillers}`.trim();
+      newDocs.push({
+        id: `d${currentId++}`,
+        text: text,
+        relevant: false
+      });
+    }
+
+    // 3. Gerar documentos NEUTROS (sem nenhum termo da busca)
+    for (let i = 0; i < nNeutral; i++) {
+      let fillers = getFillers(3 + Math.floor(Math.random() * 3));
+      if (!fillers) {
+        fillers = `documento_neutro_${currentId}`;
+      }
+      newDocs.push({
+        id: `d${currentId++}`,
+        text: fillers,
+        relevant: false
+      });
+    }
+
+    // Embaralhar para distribuição realista
+    corpus = newDocs;
+    docFilterTerm = "";
+    const filterInput = document.getElementById('docListSearch');
+    if (filterInput) filterInput.value = "";
+    
+    renderDocInputs();
+    runSearch();
+  }
+
+  function quickGenerate100Docs() {
+    let q = document.getElementById('queryInput').value.trim();
+    if (!q) {
+      document.getElementById('queryInput').value = "to do";
+    }
+    generateSyntheticCorpus(100, 10, 5, true);
+  }
+
+  function openGeneratorModal() {
+    const modal = document.getElementById('generatorModal');
+    if (!modal) return;
+    const queryRaw = document.getElementById('queryInput').value;
+    const queryTokens = Array.from(new Set(tokenize(queryRaw)));
+    const badgeContainer = document.getElementById('genQueryTermsBadge');
+
+    if (queryTokens.length === 0) {
+      badgeContainer.innerHTML = '<span style="color:#f43f5e; font-size:0.82rem;">Nenhum termo na busca. Digite termos como "to do" na consulta.</span>';
+    } else {
+      badgeContainer.innerHTML = queryTokens.map(t => `<span class="term-pill">${t}</span>`).join(' ');
+    }
+
+    updateGenSliders();
+    modal.classList.add('open');
+  }
+
+  function closeGeneratorModal() {
+    const modal = document.getElementById('generatorModal');
+    if (modal) modal.classList.remove('open');
+  }
+
+  function setGenN(n) {
+    const range = document.getElementById('genNRange');
+    if (range) range.value = n;
+    document.querySelectorAll('.gen-size-btn').forEach(b => {
+      b.classList.toggle('active', b.textContent.includes(String(n)));
+    });
+    updateGenSliders();
+  }
+
+  function updateGenSliders() {
+    const n = parseInt(document.getElementById('genNRange').value, 10);
+    const pSingle = parseInt(document.getElementById('genSingleRange').value, 10);
+    const pMulti = parseInt(document.getElementById('genMultiRange').value, 10);
+    
+    // Corrigir estouro de 100%
+    if (pSingle + pMulti > 95) {
+      document.getElementById('genMultiRange').value = Math.max(0, 95 - pSingle);
+    }
+    const safeMulti = parseInt(document.getElementById('genMultiRange').value, 10);
+    const pNeutral = Math.max(0, 100 - pSingle - safeMulti);
+
+    const nSingle = Math.round(n * (pSingle / 100));
+    const nMulti = Math.round(n * (safeMulti / 100));
+    const nNeutral = Math.max(0, n - nSingle - nMulti);
+
+    document.getElementById('genNBadge').textContent = `${n} documentos`;
+    document.getElementById('genSingleBadge').textContent = `${pSingle}% (${nSingle} docs)`;
+    document.getElementById('genMultiBadge').textContent = `${safeMulti}% (${nMulti} docs)`;
+    document.getElementById('genNeutralBadge').textContent = `${pNeutral}% (${nNeutral} docs)`;
+
+    const preview = document.getElementById('genSummaryPreview');
+    if (preview) {
+      preview.innerHTML = `
+        <div style="font-weight: 600; color: #f1f5f9; margin-bottom: 4px;">Resumo da Coleção Gerada:</div>
+        <div style="display: flex; flex-direction: column; gap: 3px;">
+          <div>🟢 <strong>${nMulti} docs (${safeMulti}%)</strong> com múltiplos termos de <em>q</em> (alta relevância probabilística)</div>
+          <div>🟡 <strong>${nSingle} docs (${pSingle}%)</strong> com exatamente 1 termo de <em>q</em> (relevância intermediária)</div>
+          <div>⚪ <strong>${nNeutral} docs (${pNeutral}%)</strong> neutros sem termos da busca (escore zero)</div>
+        </div>
+      `;
+    }
+  }
+
+  function executeModalGeneration() {
+    const n = parseInt(document.getElementById('genNRange').value, 10) || 100;
+    const pSingle = parseInt(document.getElementById('genSingleRange').value, 10) || 10;
+    const pMulti = parseInt(document.getElementById('genMultiRange').value, 10) || 5;
+    const vocab = document.getElementById('genVocabSelect').value;
+    generateSyntheticCorpus(n, pSingle, pMulti, vocab === 'words');
+    closeGeneratorModal();
+  }
+
+  // -------------------------------------------------------------------------
+  // 3. ENTRADA E LISTAGEM DE DOCUMENTOS
+  // -------------------------------------------------------------------------
+  let docFilterTerm = "";
+
+  function filterDocInputs(term) {
+    docFilterTerm = term.trim().toLowerCase();
+    renderDocInputs();
+  }
+
   function renderDocInputs() {
     const container = document.getElementById('docListContainer');
+    if (!container) return;
     container.innerHTML = '';
     
-    corpus.forEach((doc, idx) => {
+    const visibleDocs = corpus.filter(doc => {
+      if (!docFilterTerm) return true;
+      return doc.id.toLowerCase().includes(docFilterTerm) || doc.text.toLowerCase().includes(docFilterTerm);
+    });
+
+    const isLarge = visibleDocs.length > 25;
+    const displayList = isLarge ? visibleDocs.slice(0, 25) : visibleDocs;
+
+    displayList.forEach((doc) => {
+      const actualIdx = corpus.findIndex(d => d.id === doc.id);
       const row = document.createElement('div');
       row.className = 'doc-item';
       row.innerHTML = `
         <span class="doc-badge">${doc.id}</span>
-        <input type="text" class="sim-input" value="${doc.text}" oninput="updateDocText(${idx}, this.value)">
-        <button class="doc-remove-btn" title="Remover Documento" onclick="removeDoc(${idx})">✕</button>
+        <input type="text" class="sim-input" value="${doc.text}" oninput="updateDocText(${actualIdx}, this.value)" style="font-size: 0.8rem; padding: 4px 8px;">
+        <button class="doc-remove-btn" title="Remover Documento" onclick="removeDoc(${actualIdx})">✕</button>
       `;
       container.appendChild(row);
     });
 
-    document.getElementById('docCountBadge').textContent = `N = ${corpus.length}`;
+    if (isLarge) {
+      const moreInfo = document.createElement('div');
+      moreInfo.style.cssText = "font-size: 0.74rem; color: #8b9bb4; text-align: center; padding: 6px; background: rgba(255,255,255,0.02); border-radius: 4px; margin-top: 4px;";
+      moreInfo.textContent = `Mostrando primeiros 25 de ${visibleDocs.length} documentos. Use o filtro acima para buscar específicos.`;
+      container.appendChild(moreInfo);
+    }
+
+    const badge = document.getElementById('docCountBadge');
+    if (badge) {
+      badge.textContent = `N = ${corpus.length}`;
+    }
   }
 
   function updateDocText(index, newText) {
-    corpus[index].text = newText;
+    if (corpus[index]) {
+      corpus[index].text = newText;
+    }
   }
 
   function addNewDocInput() {
@@ -1739,7 +2496,15 @@
         document.getElementById('formulaSelect').value = "eq218";
       }
     }
+    docFilterTerm = "";
+    const filterInput = document.getElementById('docListSearch');
+    if (filterInput) filterInput.value = "";
+    updateModelRecommendation();
     renderDocInputs();
+    runSearch();
+  }
+
+  function onQueryInputChange() {
     runSearch();
   }
 
@@ -1752,6 +2517,170 @@
       .filter(t => t.length > 0);
   }
 
+  // -------------------------------------------------------------------------
+  // 4. ESTADO DE VISUALIZAÇÃO DA COMPOSIÇÃO DA SIMILARIDADE
+  // -------------------------------------------------------------------------
+  let simFilterMode = 'top'; // 'top', 'matched', 'all'
+  let simSearchTerm = '';
+  let simExpandedAll = false;
+
+  function setSimFilter(mode) {
+    simFilterMode = mode;
+    renderSimilaritySection();
+  }
+
+  function onSimSearch(val) {
+    simSearchTerm = val.trim().toLowerCase();
+    renderSimilaritySection();
+  }
+
+  function toggleExpandAllSim() {
+    simExpandedAll = !simExpandedAll;
+    renderSimilaritySection();
+  }
+
+  // Armazena contexto do último cálculo para permitir re-renderização instantânea dos filtros
+  let lastSearchContext = null;
+
+  function renderSimilaritySection() {
+    if (!lastSearchContext) return;
+    const { scoredDocs, termWeights, N, multiMatchCount, singleMatchCount, zeroMatchCount } = lastSearchContext;
+    const container = document.getElementById('simDynamicDocList');
+    if (!container) return;
+
+    // Atualizar botões de filtro
+    ['top', 'matched', 'all'].forEach(m => {
+      const btn = document.getElementById(`simFilterBtn_${m}`);
+      if (btn) btn.classList.toggle('active', simFilterMode === m);
+    });
+
+    let filtered = scoredDocs;
+    if (simFilterMode === 'top') {
+      filtered = scoredDocs.slice(0, Math.min(10, scoredDocs.length));
+    } else if (simFilterMode === 'matched') {
+      filtered = scoredDocs.filter(d => d.matchedTerms.length > 0);
+    }
+
+    if (simSearchTerm) {
+      filtered = filtered.filter(d => 
+        d.id.toLowerCase().includes(simSearchTerm) || 
+        d.text.toLowerCase().includes(simSearchTerm) ||
+        d.matchedTerms.some(t => t.toLowerCase().includes(simSearchTerm))
+      );
+    }
+
+    const limit = (simFilterMode === 'all' && !simExpandedAll && filtered.length > 20) ? 20 : filtered.length;
+    const displayDocs = filtered.slice(0, limit);
+
+    let docHtml = '';
+    displayDocs.forEach((doc, rankIdx) => {
+      const isMulti = doc.matchedTerms.length > 1;
+      const isSingle = doc.matchedTerms.length === 1;
+      const isZero = doc.matchedTerms.length === 0;
+      
+      const cardClass = isMulti ? 'multi-match' : (isSingle ? 'has-match' : 'zero-match');
+      const scoreColor = doc.score > 0 ? '#10b981' : (doc.score < 0 ? '#f43f5e' : '#94a3b8');
+      const scoreBg = doc.score > 0 ? 'rgba(16, 185, 129, 0.12)' : (doc.score < 0 ? 'rgba(244, 63, 94, 0.12)' : 'rgba(255, 255, 255, 0.05)');
+
+      let equationContent = '';
+      let explanationContent = '';
+      let contribBarContent = '';
+
+      if (isZero) {
+        equationContent = `
+          <span style="color: #64748b; font-size: 0.8rem;">Nenhum termo da busca presente no texto</span>
+          <span class="math-symbol">→</span>
+          <span class="math-total" style="background: ${scoreBg}; color: ${scoreColor}; font-size: 0.85rem;">escore = 0,000</span>
+        `;
+        explanationContent = `Documento neutro: não contém termos de <em>q</em>. A soma vazia resulta em escore nulo.`;
+      } else {
+        const parts = doc.matchedTerms.map(t => {
+          const w = termWeights[t];
+          const sign = w >= 0 ? '+' : '';
+          return `<span class="term-pill">${t}</span> <span class="math-val">${sign}${w.toFixed(3)}</span>`;
+        });
+
+        equationContent = `
+          ${parts.join(' <span class="math-symbol">+</span> ')}
+          <span class="math-symbol">=</span>
+          <span class="math-total" style="background: ${scoreBg}; color: ${scoreColor};">${doc.score.toFixed(3)}</span>
+        `;
+
+        if (isMulti) {
+          const colors = ['#38bdf8', '#10b981', '#f59e0b', '#818cf8', '#ec4899'];
+          const totalAbs = doc.matchedTerms.reduce((sum, t) => sum + Math.abs(termWeights[t]), 0) || 1;
+          const segments = doc.matchedTerms.map((t, i) => {
+            const pct = ((Math.abs(termWeights[t]) / totalAbs) * 100).toFixed(0);
+            return `<div class="contrib-seg" style="width: ${pct}%; background: ${colors[i % colors.length]};" title="${t}: ${pct}% da soma"></div>`;
+          }).join('');
+          contribBarContent = `<div class="contrib-bar">${segments}</div>`;
+          explanationContent = `Coocorrência de <strong>${doc.matchedTerms.length} termos</strong> (${doc.matchedTerms.join(', ')}): a soma direta dos seus pesos probabilísticos coloca este documento em destaque.`;
+        } else {
+          explanationContent = `Contém unicamente o termo <strong>"${doc.matchedTerms[0]}"</strong>: herda exatamente o peso \(w("${doc.matchedTerms[0]}") = ${doc.score.toFixed(3)}\).`;
+        }
+      }
+
+      const matchBadge = isMulti 
+        ? `<span style="color: #10b981; font-size: 0.74rem; font-weight: 600; background: rgba(16, 185, 129, 0.1); padding: 1px 6px; border-radius: 4px;">${doc.matchedTerms.length} termos casados</span>`
+        : (isSingle 
+            ? `<span style="color: #38bdf8; font-size: 0.74rem; font-weight: 600; background: rgba(56, 189, 248, 0.1); padding: 1px 6px; border-radius: 4px;">1 termo casado</span>`
+            : `<span style="color: #64748b; font-size: 0.74rem; background: rgba(255, 255, 255, 0.04); padding: 1px 6px; border-radius: 4px;">0 termos casados</span>`);
+
+      docHtml += `
+        <div class="sim-doc-card ${cardClass}">
+          <div class="sim-doc-card-header">
+            <div class="sim-doc-title-group">
+              <span class="sim-doc-pos">#${rankIdx + 1}</span>
+              <span class="sim-doc-id">${doc.id}</span>
+              <span style="font-size: 0.8rem; color: #cbd5e1; max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">"${doc.text}"</span>
+              ${matchBadge}
+            </div>
+            <div class="sim-doc-score" style="color: ${scoreColor};">
+              ${doc.score.toFixed(3)}
+            </div>
+          </div>
+
+          <div class="sim-math-equation">
+            ${equationContent}
+          </div>
+          ${contribBarContent}
+          <div class="sim-doc-explanation">
+            ${explanationContent}
+          </div>
+        </div>
+      `;
+    });
+
+    if (filtered.length === 0) {
+      docHtml = `
+        <div style="text-align: center; color: #8b9bb4; padding: 24px;">
+          Nenhum documento encontrado para o filtro selecionado.
+        </div>
+      `;
+    } else if (simFilterMode === 'all' && !simExpandedAll && filtered.length > 20) {
+      docHtml += `
+        <div style="text-align: center; padding: 10px;">
+          <button class="preset-btn" onclick="toggleExpandAllSim()" style="background: rgba(56, 189, 248, 0.12); color: #38bdf8; border-color: rgba(56, 189, 248, 0.3); padding: 6px 14px;">
+            👁️ Mostrar todos os ${filtered.length} documentos da base
+          </button>
+        </div>
+      `;
+    } else if (simExpandedAll && filtered.length > 20) {
+      docHtml += `
+        <div style="text-align: center; padding: 10px;">
+          <button class="preset-btn" onclick="toggleExpandAllSim()" style="color: #8b9bb4; padding: 5px 12px;">
+            ▲ Recolher para 20 documentos
+          </button>
+        </div>
+      `;
+    }
+
+    container.innerHTML = docHtml;
+  }
+
+  // -------------------------------------------------------------------------
+  // 5. MOTOR PRINCIPAL DE PROCESSAMENTO E RANKING
+  // -------------------------------------------------------------------------
   function runSearch() {
     const queryRaw = document.getElementById('queryInput').value;
     const queryTokens = Array.from(new Set(tokenize(queryRaw)));
@@ -1860,6 +2789,19 @@
 
     scoredDocs.sort((a, b) => b.score - a.score);
 
+    const multiMatchCount = scoredDocs.filter(d => d.matchedTerms.length > 1).length;
+    const singleMatchCount = scoredDocs.filter(d => d.matchedTerms.length === 1).length;
+    const zeroMatchCount = scoredDocs.filter(d => d.matchedTerms.length === 0).length;
+
+    lastSearchContext = {
+      scoredDocs,
+      termWeights,
+      N,
+      multiMatchCount,
+      singleMatchCount,
+      zeroMatchCount
+    };
+
     let formulaNameTitle = "";
     if (formulaType === 'eq218') formulaNameTitle = "Equação 2.18 (Corrigida sem pesos negativos - Tabela 2.11)";
     if (formulaType === 'eq217') formulaNameTitle = "Equação 2.17 (Bootstrap clássico com -n_i - Tabela 2.10)";
@@ -1878,18 +2820,19 @@
           </span>
         </div>
 
-        <table class="rank-table">
-          <thead>
-            <tr>
-              <th style="width: 45px;">Pos.</th>
-              <th style="width: 65px;">Doc</th>
-              <th style="width: 90px;">Escore</th>
-              <th>Texto do Documento</th>
-              <th style="width: 130px;">Termos Casados</th>
-              <th style="width: 120px; text-align: center;">Relevante?</th>
-            </tr>
-          </thead>
-          <tbody>
+        <div style="max-height: 260px; overflow-y: auto; border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 6px;">
+          <table class="rank-table">
+            <thead>
+              <tr>
+                <th style="width: 45px;">Pos.</th>
+                <th style="width: 65px;">Doc</th>
+                <th style="width: 90px;">Escore</th>
+                <th>Texto do Documento</th>
+                <th style="width: 130px;">Termos Casados</th>
+                <th style="width: 120px; text-align: center;">Relevante?</th>
+              </tr>
+            </thead>
+            <tbody>
     `;
 
     scoredDocs.forEach((doc, rankIdx) => {
@@ -1901,7 +2844,7 @@
           <td class="rank-pos ${posClass}">#${rankIdx + 1}</td>
           <td><strong style="color: #38bdf8;">${doc.id}</strong></td>
           <td class="rank-score" style="color: ${scoreColor};">${doc.score.toFixed(3)}</td>
-          <td style="font-size: 0.88rem; color: #e2e8f0;">"${doc.text}"</td>
+          <td style="font-size: 0.85rem; color: #e2e8f0;">"${doc.text}"</td>
           <td style="font-size: 0.8rem; color: #8b9bb4;">
             ${doc.matchedTerms.length > 0 ? doc.matchedTerms.map(t => `<code style="padding: 1px 4px;">${t}</code>`).join(' ') : '<em style="color:#5a6880;">Nenhum</em>'}
           </td>
@@ -1916,11 +2859,12 @@
     });
 
     html += `
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
 
         <div class="formula-explanation">
-          <strong>Feedback de Relevância:</strong> Marque os documentos como <strong>Sim (R)</strong> para avaliar como a fórmula de Robertson-Sparck Jones recalibra os valores de \(r_i\) e reposiciona os documentos no ranking.
+          <strong>Feedback de Relevância:</strong> Marque documentos como <strong>Sim (R)</strong> no ranking para recalibrar os valores de \(r_i\) na fórmula de Robertson-Sparck Jones e ver a ordenação bayesiana se atualizar.
         </div>
       </div>
 
@@ -2017,38 +2961,74 @@
         ` : ''}
       </div>
 
-      <!-- ETAPA 4: MATRIZ DE SIMILARIDADE POR DOCUMENTO -->
+      <!-- ETAPA 4: COMPOSIÇÃO DA SIMILARIDADE (Reformulada: Legível e Compreensível) -->
       <div class="step-card">
         <div class="step-header">
           <div class="step-title">
-            <span>Passo 3: Composição da Similaridade \(\\text{sim}(d_j, q)\)</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            <span>Passo 3: Composição da Similaridade — Decomposição Termo a Termo</span>
           </div>
+          <span style="font-size: 0.78rem; color: #38bdf8; font-family: 'JetBrains Mono', monospace;">
+            sim(d_j, q) = ∑ w_i
+          </span>
         </div>
 
-        <div style="font-size: 0.86rem; line-height: 1.6; color: #cbd5e1;">
-          <p style="margin-bottom: 6px; color: #8b9bb4;">Somatório restrito aos termos de coocorrência (\(k_i \in q \wedge k_i \in d_j\)):</p>
-          <ul style="margin-left: 18px;">
-    `;
+        <div class="sim-comp-box">
+          <!-- Card de Princípio Formal Didático -->
+          <div class="sim-principle-card">
+            <div style="font-weight: 600; color: #f8fafc; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
+              <span>Regra de Cálculo Formal:</span>
+              <span style="font-family: 'JetBrains Mono', monospace; color: #38bdf8; font-size: 0.9rem;">$$\\text{sim}(d_j, q) = \\sum_{k_i \\in q \\wedge k_i \\in d_j} w_i$$</span>
+            </div>
+            <div>
+              O escore de cada documento é <strong>a soma estrita dos pesos \(w_i\)</strong> dos termos da consulta que nele coocorrem. Termos ausentes têm peso zero.
+            </div>
+            <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+              <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 600;">Pesos vigentes nesta rodada:</span>
+              ${queryTokens.map(t => `<span class="term-pill">${t} = ${termWeights[t] >= 0 ? '+' : ''}${termWeights[t].toFixed(3)}</span>`).join(' ')}
+            </div>
+          </div>
 
-    scoredDocs.forEach(doc => {
-      const sumExpr = doc.matchedTerms.length > 0 
-        ? doc.matchedTerms.map(t => `${termWeights[t].toFixed(3)} [${t}]`).join(' + ')
-        : '0';
+          <!-- Estatísticas da Coleção -->
+          <div class="sim-stats-grid">
+            <div class="sim-stat-pill" style="border-left: 3px solid #10b981;">
+              <span class="sim-stat-pill-label">Alta Relevância (&gt;1 termo)</span>
+              <span class="sim-stat-pill-num" style="color: #10b981;">${multiMatchCount} <span style="font-size: 0.75rem; color: #8b9bb4; font-weight: 400;">docs (${((multiMatchCount / N) * 100).toFixed(0)}%)</span></span>
+            </div>
+            <div class="sim-stat-pill" style="border-left: 3px solid #38bdf8;">
+              <span class="sim-stat-pill-label">Relevância Parcial (1 termo)</span>
+              <span class="sim-stat-pill-num" style="color: #38bdf8;">${singleMatchCount} <span style="font-size: 0.75rem; color: #8b9bb4; font-weight: 400;">docs (${((singleMatchCount / N) * 100).toFixed(0)}%)</span></span>
+            </div>
+            <div class="sim-stat-pill" style="border-left: 3px solid #475569;">
+              <span class="sim-stat-pill-label">Neutros (0 termos)</span>
+              <span class="sim-stat-pill-num" style="color: #94a3b8;">${zeroMatchCount} <span style="font-size: 0.75rem; color: #64748b; font-weight: 400;">docs (${((zeroMatchCount / N) * 100).toFixed(0)}%)</span></span>
+            </div>
+          </div>
 
-      html += `
-        <li style="margin-bottom: 5px;">
-          <strong>${doc.id}:</strong> \(\\text{sim}(${doc.id}, q) = ${sumExpr} = \\mathbf{${doc.score.toFixed(3)}}\)
-        </li>
-      `;
-    });
+          <!-- Barra de Filtros e Busca de Documentos na Composição -->
+          <div class="sim-filter-bar">
+            <div class="sim-filter-tabs">
+              <button class="sim-filter-btn ${simFilterMode === 'top' ? 'active' : ''}" id="simFilterBtn_top" onclick="setSimFilter('top')">Top 10 Documentos</button>
+              <button class="sim-filter-btn ${simFilterMode === 'matched' ? 'active' : ''}" id="simFilterBtn_matched" onclick="setSimFilter('matched')">Com Pontuação (${multiMatchCount + singleMatchCount})</button>
+              <button class="sim-filter-btn ${simFilterMode === 'all' ? 'active' : ''}" id="simFilterBtn_all" onclick="setSimFilter('all')">Ver Todos (${N})</button>
+            </div>
+            <div>
+              <input type="text" class="sim-input" placeholder="🔍 Localizar doc (ex: d1)..." oninput="onSimSearch(this.value)" style="font-size: 0.76rem; padding: 4px 8px; width: 170px;">
+            </div>
+          </div>
 
-    html += `
-          </ul>
+          <!-- Container Dinâmico com Cards Legíveis -->
+          <div class="sim-doc-grid" id="simDynamicDocList">
+            <!-- Renderizado dinamicamente via renderSimilaritySection() -->
+          </div>
+
         </div>
       </div>
     `;
 
     resultsArea.innerHTML = html;
+
+    renderSimilaritySection();
 
     if (window.MathJax && window.MathJax.typesetPromise) {
       window.MathJax.typesetPromise([resultsArea]).catch(() => {});
@@ -2063,10 +3043,12 @@
       if (doc.relevant && formulaSelect.value === 'eq218') {
         formulaSelect.value = 'eqRSJ';
       }
+      updateModelRecommendation();
       runSearch();
     }
   }
 
+  updateModelRecommendation();
   renderDocInputs();
   updateSlide(0);
 </script>
